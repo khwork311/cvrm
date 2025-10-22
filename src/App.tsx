@@ -122,7 +122,7 @@ const AppContent = () => {
                   </ProtectedRoute>
                 }
               >
-                <Route index path="/" element={<Home />} />
+                <Route index element={<Home />} />
 
                 {/* Companies */}
                 <Route path="/companies" element={<CompaniesList />} />
