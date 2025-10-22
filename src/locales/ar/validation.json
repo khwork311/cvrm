@@ -1,0 +1,97 @@
+{
+  "required": "هذا الحقل مطلوب",
+  "email": "صيغة البريد الإلكتروني غير صحيحة",
+  "url": "صيغة الرابط غير صحيحة",
+  "urlProtocol": "يجب أن يبدأ الرابط بـ http:// أو https://",
+  "minLength": "يجب أن يكون {{min}} حرفًا على الأقل",
+  "maxLength": "يجب ألا يتجاوز {{max}} حرفًا",
+  "lengthRange": "يجب أن يكون بين {{min}} و {{max}} حرفًا",
+  "dateAfter": "يجب أن يكون تاريخ الانتهاء بعد أو يساوي تاريخ البداية",
+  "digits": "يجب أن يحتوي على أرقام فقط",
+  "exactDigits": "يجب أن يكون {{count}} رقمًا بالضبط",
+  "maxChars": "يجب ألا يتجاوز {{max}} حرفًا",
+  "company": {
+    "nameRequired": "اسم الشركة مطلوب",
+    "nameLength": "يجب أن يكون الاسم بين 2 و 120 حرفًا",
+    "vatRequired": "الرقم الضريبي مطلوب",
+    "planRequired": "الخطة مطلوبة",
+    "emailInvalid": "صيغة البريد الإلكتروني غير صحيحة",
+    "urlInvalid": "صيغة الرابط غير صحيحة",
+    "urlProtocol": "يجب أن يبدأ الرابط بـ http:// أو https://",
+    "dateInvalid": "يجب أن يكون تاريخ الانتهاء بعد أو يساوي تاريخ البداية"
+  },
+  "contact": {
+    "firstNameEnRequired": "الاسم الأول (EN) مطلوب",
+    "firstNameArRequired": "الاسم الأول (AR) مطلوب",
+    "lastNameEnRequired": "اسم العائلة (EN) مطلوب",
+    "lastNameArRequired": "اسم العائلة (AR) مطلوب",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "emailInvalid": "صيغة البريد الإلكتروني غير صحيحة"
+  },
+  "bankAccount": {
+    "bankNameEnRequired": "اسم البنك (EN) مطلوب",
+    "bankNameArRequired": "اسم البنك (AR) مطلوب",
+    "ibanRequired": "رقم الآيبان مطلوب",
+    "ibanInvalid": "يجب أن يكون رقم الآيبان 14 رقمًا بالضبط",
+    "countryCodeMax": "رمز الدولة يجب أن يكون حرفين"
+  },
+  "address": {
+    "countryRequired": "الدولة مطلوبة",
+    "cityRequired": "المدينة مطلوبة",
+    "addressNameRequired": "اسم العنوان مطلوب",
+    "streetNameRequired": "اسم الشارع مطلوب"
+  },
+  "customer": {
+    "nameEnRequired": "الاسم (بالإنجليزية) مطلوب",
+    "nameEnLength": "يجب أن يكون الاسم (بالإنجليزية) بين 2 و 120 حرفًا",
+    "nameArRequired": "الاسم (بالعربية) مطلوب",
+    "nameArLength": "يجب أن يكون الاسم (بالعربية) بين 2 و 120 حرفًا",
+    "phoneRequired": "رقم الهاتف مطلوب",
+    "phoneInvalid": "يجب أن يحتوي رقم الهاتف على أرقام وأحرف صالحة فقط (+، -، مسافات، أقواس)",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "emailInvalid": "صيغة البريد الإلكتروني غير صحيحة",
+    "taxNumberRequired": "الرقم الضريبي مطلوب"
+  },
+  "plan": {
+    "titleEnRequired": "العنوان (بالإنجليزية) مطلوب",
+    "titleEnLength": "يجب أن يكون العنوان (بالإنجليزية) بين 2 و 120 حرفًا",
+    "titleArRequired": "العنوان (بالعربية) مطلوب",
+    "titleArLength": "يجب أن يكون العنوان (بالعربية) بين 2 و 120 حرفًا",
+    "numberInvalid": "يجب أن يكون رقمًا غير سالب"
+  },
+  "role": {
+    "nameRequired": "اسم الدور مطلوب",
+    "nameMinLength": "يجب أن يكون اسم الدور حرفين على الأقل",
+    "nameMaxLength": "يجب ألا يتجاوز اسم الدور 50 حرفًا",
+    "atLeastOnePermission": "يرجى اختيار صلاحية واحدة على الأقل"
+  },
+  "customerGroup": {
+    "nameLength": "يجب أن يكون الاسم بين 2 و 120 حرفًا",
+    "groupRequired": "الرجاء اختيار مجموعة عملاء",
+    "customerRequired": "الرجاء اختيار عميل"
+  },
+  "vendorGroup": {
+    "nameLength": "يجب أن يكون الاسم بين 2 و 120 حرفًا",
+    "groupRequired": "الرجاء اختيار مجموعة موردين",
+    "vendorRequired": "الرجاء اختيار مورد"
+  },
+  "user": {
+    "nameMinLength": "الاسم يجب أن يكون على الأقل 2 أحرف",
+    "nameMaxLength": "الاسم يجب ألا يتجاوز 100 حرف",
+    "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح",
+    "passwordMinLength": "كلمة المرور يجب أن تكون على الأقل 8 أحرف",
+    "roleRequired": "يرجى اختيار دور"
+  },
+  "vendor": {
+    "nameEnRequired": "الاسم (بالإنجليزية) مطلوب",
+    "nameArRequired": "الاسم (بالعربية) مطلوب",
+    "phoneRequired": "رقم الهاتف مطلوب",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "emailInvalid": "صيغة البريد الإلكتروني غير صحيحة",
+    "taxNumberRequired": "الرقم الضريبي مطلوب"
+  },
+  "invalidEmail": "صيغة البريد الإلكتروني غير صحيحة",
+  "ibanInvalid": "يجب أن يكون رقم الآيبان 14 رقمًا بالضبط",
+  "countryCodeMax": "رمز الدولة يجب أن يكون حرفين",
+  "passwordMismatch": "كلمات المرور غير متطابقة"
+}

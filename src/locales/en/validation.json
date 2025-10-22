@@ -1,0 +1,97 @@
+{
+  "required": "This field is required",
+  "email": "Invalid email format",
+  "url": "Invalid URL format",
+  "urlProtocol": "URL must start with http:// or https://",
+  "minLength": "Must be at least {{min}} characters",
+  "maxLength": "Must not exceed {{max}} characters",
+  "lengthRange": "Must be between {{min}} and {{max}} characters",
+  "dateAfter": "End date must be after or equal to start date",
+  "digits": "Must contain only digits",
+  "exactDigits": "Must be exactly {{count}} digits",
+  "maxChars": "Must not exceed {{max}} characters",
+  "company": {
+    "nameRequired": "Company name is required",
+    "nameLength": "Name must be between 2 and 120 characters",
+    "vatRequired": "VAT number is required",
+    "planRequired": "Plan is required",
+    "emailInvalid": "Invalid email format",
+    "urlInvalid": "Invalid URL format",
+    "urlProtocol": "URL must start with http:// or https://",
+    "dateInvalid": "End date must be after or equal to start date"
+  },
+  "contact": {
+    "firstNameEnRequired": "First name (EN) is required",
+    "firstNameArRequired": "First name (AR) is required",
+    "lastNameEnRequired": "Last name (EN) is required",
+    "lastNameArRequired": "Last name (AR) is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email format"
+  },
+  "bankAccount": {
+    "bankNameEnRequired": "Bank name (EN) is required",
+    "bankNameArRequired": "Bank name (AR) is required",
+    "ibanRequired": "IBAN is required",
+    "ibanInvalid": "IBAN must be exactly 14 digits",
+    "countryCodeMax": "Country code must be 2 characters"
+  },
+  "address": {
+    "countryRequired": "Country is required",
+    "cityRequired": "City is required",
+    "addressNameRequired": "Address name is required",
+    "streetNameRequired": "Street name is required"
+  },
+  "customer": {
+    "nameEnRequired": "Name (English) is required",
+    "nameEnLength": "Name (English) must be between 2 and 120 characters",
+    "nameArRequired": "Name (Arabic) is required",
+    "nameArLength": "Name (Arabic) must be between 2 and 120 characters",
+    "phoneRequired": "Phone number is required",
+    "phoneInvalid": "Phone number must contain only numbers and valid characters (+, -, spaces, parentheses)",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email format",
+    "taxNumberRequired": "Tax number is required"
+  },
+  "plan": {
+    "titleEnRequired": "Title (English) is required",
+    "titleEnLength": "Title (English) must be between 2 and 120 characters",
+    "titleArRequired": "Title (Arabic) is required",
+    "titleArLength": "Title (Arabic) must be between 2 and 120 characters",
+    "numberInvalid": "Must be a non-negative number"
+  },
+  "role": {
+    "nameRequired": "Role name is required",
+    "nameMinLength": "Role name must be at least 2 characters",
+    "nameMaxLength": "Role name must not exceed 50 characters",
+    "atLeastOnePermission": "Please select at least one permission"
+  },
+  "customerGroup": {
+    "nameLength": "Name must be between 2 and 120 characters",
+    "groupRequired": "Please select a customer group",
+    "customerRequired": "Please select a customer"
+  },
+  "vendorGroup": {
+    "nameLength": "Name must be between 2 and 120 characters",
+    "groupRequired": "Please select a vendor group",
+    "vendorRequired": "Please select a vendor"
+  },
+  "user": {
+    "nameMinLength": "Name must be at least 2 characters",
+    "nameMaxLength": "Name must not exceed 100 characters",
+    "emailInvalid": "Please enter a valid email address",
+    "passwordMinLength": "Password must be at least 8 characters",
+    "roleRequired": "Please select a role"
+  },
+  "vendor": {
+    "nameEnRequired": "Name (English) is required",
+    "nameArRequired": "Name (Arabic) is required",
+    "phoneRequired": "Phone number is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email format",
+    "taxNumberRequired": "Tax number is required"
+  },
+  "invalidEmail": "Invalid email format",
+  "ibanInvalid": "IBAN must be exactly 14 digits",
+  "countryCodeMax": "Country code must be 2 characters",
+  "passwordMismatch": "Passwords do not match"
+}
