@@ -116,6 +116,7 @@ const AppContent = () => {
               <Routes>
               {/* Protected Dashboard Layout */}
               <Route
+                path="/*"
                 element={
                   <ProtectedRoute>
                     <AppLayout />
@@ -125,75 +126,75 @@ const AppContent = () => {
                 <Route index element={<Home />} />
 
                 {/* Companies */}
-                <Route path="/companies" element={<CompaniesList />} />
-                <Route path="/companies/create" element={<CreateCompany />} />
-                <Route path="/companies/:companyId/edit" element={<CreateCompany />} />
-                <Route path="/companies/:companyId/contacts" element={<ContactPersons />} />
-                <Route path="/companies/:companyId/bank-accounts" element={<BankAccounts />} />
-                <Route path="/companies/:companyId/addresses" element={<Addresses />} />
+                <Route path="companies" element={<CompaniesList />} />
+                <Route path="companies/create" element={<CreateCompany />} />
+                <Route path="companies/:companyId/edit" element={<CreateCompany />} />
+                <Route path="companies/:companyId/contacts" element={<ContactPersons />} />
+                <Route path="companies/:companyId/bank-accounts" element={<BankAccounts />} />
+                <Route path="companies/:companyId/addresses" element={<Addresses />} />
 
                 {/* Customers */}
-                <Route path="/customers" element={<CustomersList />} />
-                <Route path="/customers/create" element={<CustomerForm />} />
-                <Route path="/customers/:customerId/edit" element={<CustomerForm />} />
+                <Route path="customers" element={<CustomersList />} />
+                <Route path="customers/create" element={<CustomerForm />} />
+                <Route path="customers/:customerId/edit" element={<CustomerForm />} />
 
                 {/* Plans */}
-                <Route path="/plans/create" element={<CreatePlan />} />
-                <Route path="/plans/update" element={<UpdatePlan />} />
-                <Route path="/plans" element={<Plans />} />
+                <Route path="plans/create" element={<CreatePlan />} />
+                <Route path="plans/update" element={<UpdatePlan />} />
+                <Route path="plans" element={<Plans />} />
 
                 {/* Roles */}
-                <Route path="/roles/create" element={<CreateRole />} />
-                <Route path="/roles/update" element={<UpdateRole />} />
-                <Route path="/roles" element={<Roles />} />
+                <Route path="roles/create" element={<CreateRole />} />
+                <Route path="roles/update" element={<UpdateRole />} />
+                <Route path="roles" element={<Roles />} />
 
                 {/* Users */}
-                <Route path="/users/create" element={<CreateUser />} />
-                <Route path="/users/update" element={<UpdateUser />} />
-                <Route path="/users" element={<Users />} />
+                <Route path="users/create" element={<CreateUser />} />
+                <Route path="users/update" element={<UpdateUser />} />
+                <Route path="users" element={<Users />} />
 
                 {/* Customer Groups */}
-                <Route path="/customer-groups" element={<CustomerGroupsList />} />
-                <Route path="/customer-groups/create" element={<CreateCustomerGroup />} />
-                <Route path="/customer-groups/:groupId/edit" element={<CreateCustomerGroup />} />
-                <Route path="/customer-groups/:groupId/customers" element={<GroupCustomers />} />
-                <Route path="/customer-groups/:groupId/assign" element={<AssignCustomer />} />
+                <Route path="customer-groups" element={<CustomerGroupsList />} />
+                <Route path="customer-groups/create" element={<CreateCustomerGroup />} />
+                <Route path="customer-groups/:groupId/edit" element={<CreateCustomerGroup />} />
+                <Route path="customer-groups/:groupId/customers" element={<GroupCustomers />} />
+                <Route path="customer-groups/:groupId/assign" element={<AssignCustomer />} />
 
                 {/* Vendor Groups */}
-                <Route path="/vendor-groups" element={<VendorGroupsList />} />
-                <Route path="/vendor-groups/create" element={<VendorGroupForm />} />
-                <Route path="/vendor-groups/:groupId/edit" element={<VendorGroupForm />} />
-                <Route path="/vendor-groups/assign" element={<AssignVendor />} />
+                <Route path="vendor-groups" element={<VendorGroupsList />} />
+                <Route path="vendor-groups/create" element={<VendorGroupForm />} />
+                <Route path="vendor-groups/:groupId/edit" element={<VendorGroupForm />} />
+                <Route path="vendor-groups/assign" element={<AssignVendor />} />
 
                 {/* Vendors */}
-                <Route path="/vendors" element={<VendorsList />} />
-                <Route path="/vendors/create" element={<VendorForm />} />
-                <Route path="/vendors/:vendorId" element={<VendorDetail />} />
-                <Route path="/vendors/:vendorId/edit" element={<VendorForm />} />
-                <Route path="/vendors/:vendorId/invite" element={<SendInvitation />} />
+                <Route path="vendors" element={<VendorsList />} />
+                <Route path="vendors/create" element={<VendorForm />} />
+                <Route path="vendors/:vendorId" element={<VendorDetail />} />
+                <Route path="vendors/:vendorId/edit" element={<VendorForm />} />
+                <Route path="vendors/:vendorId/invite" element={<SendInvitation />} />
 
                 {/* Others Page */}
-                <Route path="/profile" element={<UserProfiles />} />
-                <Route path="/calendar" element={<Calendar />} />
-                <Route path="/blank" element={<Blank />} />
+                <Route path="profile" element={<UserProfiles />} />
+                <Route path="calendar" element={<Calendar />} />
+                <Route path="blank" element={<Blank />} />
 
                 {/* Forms */}
-                <Route path="/form-elements" element={<FormElements />} />
+                <Route path="form-elements" element={<FormElements />} />
 
                 {/* Tables */}
-                <Route path="/basic-tables" element={<BasicTables />} />
+                <Route path="basic-tables" element={<BasicTables />} />
 
                 {/* Ui Elements */}
-                <Route path="/alerts" element={<Alerts />} />
-                <Route path="/avatars" element={<Avatars />} />
-                <Route path="/badge" element={<Badges />} />
-                <Route path="/buttons" element={<Buttons />} />
-                <Route path="/images" element={<Images />} />
-                <Route path="/videos" element={<Videos />} />
+                <Route path="alerts" element={<Alerts />} />
+                <Route path="avatars" element={<Avatars />} />
+                <Route path="badge" element={<Badges />} />
+                <Route path="buttons" element={<Buttons />} />
+                <Route path="images" element={<Images />} />
+                <Route path="videos" element={<Videos />} />
 
                 {/* Charts */}
-                <Route path="/line-chart" element={<LineChart />} />
-                <Route path="/bar-chart" element={<BarChart />} />
+                <Route path="line-chart" element={<LineChart />} />
+                <Route path="bar-chart" element={<BarChart />} />
               </Route>
 
               {/* Guest Routes - Auth Pages */}
