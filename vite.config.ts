@@ -159,7 +159,7 @@ export default defineConfig({
   },
   // Server configuration
   server: {
-    port: process.env.PORT as unknown as number,
+    port: process.env.PORT ? parseInt(process.env.PORT, 10) : 5173,
     strictPort: false,
     host: true,
     open: false,
