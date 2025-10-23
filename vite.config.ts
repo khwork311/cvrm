@@ -1,7 +1,7 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
-
+import vercel from 'vite-plugin-vercel';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -14,6 +14,7 @@ export default defineConfig({
         namedExport: 'ReactComponent',
       },
     }),
+    vercel(),
   ],
   base: '/',
   resolve: {
@@ -158,7 +159,7 @@ export default defineConfig({
   },
   // Server configuration
   server: {
-    port: 3000,
+    port: process.env.PORT as unknown as number,
     strictPort: false,
     host: true,
     open: false,
@@ -169,5 +170,8 @@ export default defineConfig({
     strictPort: false,
     host: true,
     open: false,
+  },
+  define: {
+    __APP_ENV__: process.env.VITE_VERCEL_ENV,
   },
 });

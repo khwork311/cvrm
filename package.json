@@ -41,6 +41,8 @@
     "swiper": "^11.2.3",
     "swr": "^2.3.6",
     "tailwind-merge": "^3.0.1",
+    "vercel": "^48.5.0",
+    "vite-plugin-vercel": "^9.0.7",
     "zod": "^4.1.12"
   },
   "devDependencies": {
