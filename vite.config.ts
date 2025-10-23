@@ -1,7 +1,6 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
-import vercel from 'vite-plugin-vercel';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -14,7 +13,7 @@ export default defineConfig({
         namedExport: 'ReactComponent',
       },
     }),
-    vercel(),
+    netlify(),
   ],
   base: '/',
   resolve: {
@@ -171,7 +170,7 @@ export default defineConfig({
     host: true,
     open: false,
   },
-  define: {
-    __APP_ENV__: process.env.VITE_VERCEL_ENV,
-  },
 });
+function netlify(): import('vite').PluginOption {
+  throw new Error('Function not implemented.');
+}

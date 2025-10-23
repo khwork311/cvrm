@@ -35,3 +35,6 @@ bun.lockb
 .env.*
 .env.example
 .vercel
+
+# Local Netlify folder
+.netlify

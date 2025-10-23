@@ -19,6 +19,7 @@
     "@fullcalendar/react": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
     "@hookform/resolvers": "^5.2.2",
+    "@netlify/vite-plugin": "^2.7.6",
     "@react-jvectormap/core": "^1.0.4",
     "@react-jvectormap/world": "^1.1.2",
     "apexcharts": "^4.1.0",
@@ -41,8 +42,6 @@
     "swiper": "^11.2.3",
     "swr": "^2.3.6",
     "tailwind-merge": "^3.0.1",
-    "vercel": "^48.5.0",
-    "vite-plugin-vercel": "^9.0.7",
     "zod": "^4.1.12"
   },
   "devDependencies": {
