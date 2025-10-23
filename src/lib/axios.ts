@@ -4,7 +4,7 @@ import { TokenManager } from '../utils/tokenManager';
 
 // Create axios instance with default config
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://api.example.com',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',

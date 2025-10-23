@@ -6,7 +6,7 @@ import {
 import { Permission } from "../../types/auth.types";
 
 // Define your actions
-export type Action = "view" | "create" | "update" | "delete" | "manage" | "assign" | "toggle" | "reset-password" | "read";
+export type Action = "view" | "create" | "update" | "delete" | "manage" | "assign" | "toggle" | "reset-password" | "read" | string;
 
 // Define your subjects (resources)
 export type Subject =
@@ -21,9 +21,11 @@ export type Subject =
   | "Post"
   | "Comment"
   | "Analytics"
+  | "Activity"
   | "Dashboard"
   | "Settings"
-  | "all";
+  | "all"
+  | string;
 
 // Define the Ability type
 export type AppAbility = MongoAbility<[Action, Subject]>;
@@ -34,15 +36,39 @@ export const createAbility = () => createMongoAbility<AppAbility>();
 /**
  * Define abilities based on user permissions from API
  * Permissions format: "resource.action" (e.g., "users.view", "companies.create")
+ * or "action.resource" (e.g., "view.Activity", "create.users")
  */
 export function defineAbilitiesFromPermissions(permissions: Permission[]): AppAbility {
   const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
   permissions.forEach((permission) => {
-    const [subject, action] = permission.name.split(".");
+    const parts = permission.name.split(".");
     
-    if (subject && action) {
-      can(action as Action, subject as Subject);
+    if (parts.length !== 2) {
+      console.warn(`Invalid permission format: ${permission.name}. Expected format: "resource.action" or "action.resource"`);
+      return;
+    }
+
+    const [first, second] = parts;
+    
+    if (!first || !second) {
+      console.warn(`Invalid permission format: ${permission.name}. Both parts must be non-empty`);
+      return;
+    }
+
+    // Try to determine if it's "action.resource" or "resource.action"
+    // Common actions: view, create, update, delete, manage, assign, toggle, reset-password, read
+    const commonActions = ["view", "create", "update", "delete", "manage", "assign", "toggle", "reset-password", "read"];
+    
+    if (commonActions.includes(first.toLowerCase())) {
+      // Format is "action.resource"
+      can(first as Action, second as Subject);
+    } else if (commonActions.includes(second.toLowerCase())) {
+      // Format is "resource.action"
+      can(second as Action, first as Subject);
+    } else {
+      // Assume "resource.action" format
+      can(second as Action, first as Subject);
     }
   });
 

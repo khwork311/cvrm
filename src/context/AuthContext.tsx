@@ -108,6 +108,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Clear tokens and user state
       TokenManager.clearTokens();
       setUser(null);
+      // Navigate to signin page
+      navigate('/signin');
     }
   }, [navigate]);
 
