@@ -36,6 +36,11 @@ const getNavItems = (t: (key: string) => string): NavItem[] => [
     path: '/companies',
   },
   {
+    icon: <GroupIcon />,
+    name: t('companies'),
+    path: '/companies',
+  },
+  {
     icon: <UserIcon />,
     name: t('customers'),
     path: '/customers',
