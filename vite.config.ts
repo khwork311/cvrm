@@ -13,7 +13,6 @@ export default defineConfig({
         namedExport: 'ReactComponent',
       },
     }),
-    netlify(),
   ],
   base: '/',
   resolve: {
@@ -171,6 +170,3 @@ export default defineConfig({
     open: false,
   },
 });
-function netlify(): import('vite').PluginOption {
-  throw new Error('Function not implemented.');
-}
