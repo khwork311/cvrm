@@ -10,6 +10,7 @@
   "digits": "Must contain only digits",
   "exactDigits": "Must be exactly {{count}} digits",
   "maxChars": "Must not exceed {{max}} characters",
+  "passwordMinLength": "Password must be at least 8 characters",
   "company": {
     "nameRequired": "Company name is required",
     "nameLength": "Name must be between 2 and 120 characters",
@@ -50,7 +51,9 @@
     "phoneInvalid": "Phone number must contain only numbers and valid characters (+, -, spaces, parentheses)",
     "emailRequired": "Email is required",
     "emailInvalid": "Invalid email format",
-    "taxNumberRequired": "Tax number is required"
+    "taxNumberRequired": "Tax number is required",
+    "customerGroupRequired": "Customer group is required",
+    "statusRequired": "Status is required"
   },
   "plan": {
     "titleEnRequired": "Title (English) is required",
@@ -68,12 +71,14 @@
   "customerGroup": {
     "nameLength": "Name must be between 2 and 120 characters",
     "groupRequired": "Please select a customer group",
-    "customerRequired": "Please select a customer"
+    "customerRequired": "Please select a customer",
+    "statusRequired": "Status is required"
   },
   "vendorGroup": {
     "nameLength": "Name must be between 2 and 120 characters",
     "groupRequired": "Please select a vendor group",
-    "vendorRequired": "Please select a vendor"
+    "vendorRequired": "Please select a vendor",
+    "statusRequired": "Status is required"
   },
   "user": {
     "nameMinLength": "Name must be at least 2 characters",

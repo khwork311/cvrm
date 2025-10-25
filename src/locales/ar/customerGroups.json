@@ -34,5 +34,19 @@
   "assigning": "جاري التعيين...",
   "all": "الكل",
   "active": "نشط",
-  "inactive": "غير نشط"
+  "inactive": "غير نشط",
+  "subtitle": "إدارة وتنظيم مجموعات العملاء",
+  "nameColumn": "الاسم",
+  "customersCount": "العملاء",
+  "viewCustomers": "عرض العملاء",
+  "assignCustomers": "تعيين عملاء",
+  "noGroupsMatchFilters": "لا توجد مجموعات عملاء تطابق عوامل التصفية الحالية",
+  "noGroupsCreated": "لم يتم إنشاء أي مجموعات عملاء بعد",
+  "createFirstGroup": "إنشاء أول مجموعة",
+  "resetFilters": "إعادة تعيين الفلاتر",
+  "statusUpdated": "تم تحديث الحالة بنجاح",
+  "statusUpdateError": "فشل في تحديث الحالة",
+  "confirmToggle": "تأكيد تغيير الحالة",
+  "deactivateConfirm": "هل أنت متأكد أنك تريد تعطيل المجموعة \"{{group}}\"؟",
+  "activateConfirm": "هل أنت متأكد أنك تريد تفعيل المجموعة \"{{group}}\"؟"
 }

@@ -2,7 +2,7 @@
  * Additional TypeScript types for CASL integration
  */
 
-import { AppAbility, Action, Subject } from './ability';
+import { Action, AppAbility, Subject } from './ability';
 
 /**
  * Permission check object

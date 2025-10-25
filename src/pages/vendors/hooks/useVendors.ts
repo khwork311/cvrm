@@ -51,8 +51,8 @@ export function useUpdateVendor() {
  * Hook to toggle vendor status
  */
 export function useToggleVendorStatus() {
-  return useSWRMutation('vendors', async (_key, { arg }: { arg: number }) => {
-    return vendorsApi.toggleStatus(arg);
+  return useSWRMutation('vendors', async (_key, { arg }: { arg: { id: number; status: number } }) => {
+    return vendorsApi.toggleStatus(arg.id, arg.status);
   });
 }
 
@@ -101,4 +101,34 @@ export function useAcceptInvitation() {
       return invitationApi.acceptInvitation(arg);
     }
   );
+}
+
+/**
+ * Hook to fetch vendors dropdown
+ */
+export function useVendorsDropdown(filters?: VendorFilters) {
+  const key = ['vendors-dropdown', filters];
+
+  return useSWR(key, () => vendorsApi.getDropdown(filters), {
+    revalidateOnFocus: false,
+    keepPreviousData: true,
+  });
+}
+
+/**
+ * Hook to delete a vendor
+ */
+export function useDeleteVendor() {
+  return useSWRMutation('vendors', async (_key, { arg }: { arg: number }) => {
+    return vendorsApi.delete(arg);
+  });
+}
+
+/**
+ * Hook to export vendors to Excel
+ */
+export function useExportVendors() {
+  return useSWRMutation('vendors-export', async () => {
+    return vendorsApi.exportExcel();
+  });
 }

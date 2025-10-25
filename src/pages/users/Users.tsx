@@ -1,3 +1,4 @@
+import Alert from '@/components/ui/alert/Alert';
 import Badge from '@/components/ui/badge/Badge';
 import Button from '@/components/ui/button/Button';
 import { SectionLoading } from '@/components/ui/loading/SectionLoading';
@@ -38,7 +39,7 @@ export const Users = () => {
     page,
   };
 
-  const { data, mutate, isLoading } = useUsers(filters);
+  const { data, mutate, isLoading, error } = useUsers(filters);
   const { trigger: toggleStatus, isMutating: togglingStatus } = useToggleUserStatus();
 
   // SERVER-SIDE PAGINATION DATA
@@ -75,6 +76,17 @@ export const Users = () => {
 
   if (isLoading) {
     return <SectionLoading size="lg" text={t('users:loading')} />;
+  }
+
+  if (error) {
+    return (
+      <Alert
+        variant="error"
+        title={t('plans:errorFetchingPlans')}
+        message={error.response.data.message}
+        showLink={false}
+      />
+    );
   }
 
   // EMPTY STATE

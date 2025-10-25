@@ -1,6 +1,7 @@
+import { EmptyState } from '@/components/common/EmptyState';
 import PageMeta from '@/components/common/PageMeta';
 import Button from '@/components/ui/button/Button';
-import { TableActionsDropdown, type TableAction } from '@/components/ui/dropdown/TableActionsDropdown';
+import { ConfirmationModal } from '@/components/ui/modal/ConfirmationModal';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/context/ToastContext';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -17,21 +18,25 @@ import { getVendorGroupSchema, type VendorGroupFormData } from './schemas';
 
 export const VendorGroupsList = () => {
   const { t, ready } = useTranslation(['vendorGroups', 'common']);
+  const toast = useToast();
 
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [editingGroup, setEditingGroup] = useState<VendorGroup | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    groupId: number | null;
+    groupName: string | null;
+  }>({ isOpen: false, groupId: null, groupName: null });
 
   // Debounce search input to avoid excessive API calls
   const debouncedSearch = useDebounce(search);
 
-  // TODO: Get company_id from auth context or route params
-  // Fetch vendor groups with SWR using debounced search
   const { data, isLoading, mutate } = useVendorGroups({
     search: debouncedSearch ? debouncedSearch : undefined,
     page,
-    limit: PAGE_LIMIT,
+    per_page: PAGE_LIMIT,
   });
   const { trigger: deleteGroupMutation } = useDeleteVendorGroup();
 
@@ -43,15 +48,26 @@ export const VendorGroupsList = () => {
   const from = paginationData?.from ?? 0;
   const to = paginationData?.to ?? 0;
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this vendor group?')) {
-      return;
-    }
+  const handleDeleteClick = (id: number, name: string) => {
+    setConfirmModal({
+      isOpen: true,
+      groupId: id,
+      groupName: name,
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmModal.groupId) return;
+
     try {
-      await deleteGroupMutation(id);
+      await deleteGroupMutation(confirmModal.groupId);
       mutate();
+      toast.success(t('vendorGroups:deleteSuccess', 'Vendor group deleted successfully'));
     } catch (error) {
       console.error('Failed to delete vendor group:', error);
+      toast.error(t('vendorGroups:deleteError', 'Failed to delete vendor group'));
+    } finally {
+      setConfirmModal({ isOpen: false, groupId: null, groupName: null });
     }
   };
 
@@ -126,7 +142,7 @@ export const VendorGroupsList = () => {
           </div>
 
           {/* Table for desktop */}
-          <div className="relative mt-6 hidden overflow-x-auto rounded-xl border border-gray-200 md:block dark:border-gray-700">
+          <div className="relative mt-6 hidden overflow-x-auto overflow-y-visible rounded-xl border border-gray-200 md:block dark:border-gray-700">
             <Table className="min-w-[800px]">
               {/* Table Header */}
               <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
@@ -186,23 +202,14 @@ export const VendorGroupsList = () => {
                     </TableCell>
 
                     <TableCell className="px-5 py-4 text-center">
-                      <TableActionsDropdown
-                        actions={
-                          [
-                            {
-                              label: t('common:edit'),
-                              onClick: () => handleEdit(group),
-                              icon: <PencilIcon className="h-4 w-4" />,
-                              variant: 'primary',
-                            },
-                            {
-                              label: t('common:delete'),
-                              onClick: () => handleDelete(group.id),
-                              variant: 'danger',
-                            },
-                          ] as TableAction[]
-                        }
-                      />
+                      <button
+                        onClick={() => handleEdit(group)}
+                        className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-blue-700 hover:shadow-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                        title={t('common:edit')}
+                      >
+                        <PencilIcon className="h-4 w-4" />
+                        {t('common:edit')}
+                      </button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -220,13 +227,17 @@ export const VendorGroupsList = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white/90">{group.name_en}</h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400" dir="auto">{group.name_ar}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400" dir="auto">
+                      {group.name_ar}
+                    </p>
                   </div>
                 </div>
 
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="font-medium text-gray-700 dark:text-gray-300">{t('vendorGroups:createdAtColumn')}:</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">
+                      {t('vendorGroups:createdAtColumn')}:
+                    </span>
                     <span className="text-gray-600 dark:text-gray-400">{group.created_at || '-'}</span>
                   </div>
                 </div>
@@ -240,7 +251,7 @@ export const VendorGroupsList = () => {
                     {t('common:edit')}
                   </button>
                   <button
-                    onClick={() => handleDelete(group.id)}
+                    onClick={() => handleDeleteClick(group.id, group.name_en)}
                     className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-semibold text-red-600 transition-all duration-200 hover:bg-red-50 dark:border-red-700 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-red-900/20"
                   >
                     {t('common:delete')}
@@ -250,15 +261,11 @@ export const VendorGroupsList = () => {
             ))}
           </div>
 
-          {/* Show "no data" message only when not using dummy data and no real data exists */}
           {vendorGroups.length === 0 && !isLoading && (
-            <div className="flex flex-col items-center justify-center gap-4 py-10">
-              <img src="/images/error/404.svg" alt="404" className="dark:hidden" />
-              <img src="/images/error/404-dark.svg" alt="404" className="hidden dark:block" />
-              <p className="text-center text-2xl font-semibold text-gray-500 dark:text-gray-400">
-                {t('vendorGroups:noGroupsFound')}
-              </p>
-            </div>
+            <EmptyState
+              title={t('vendorGroups:noGroupsFound')}
+              description={t('vendorGroups:noGroupsDescription', 'Create your first vendor group to organize vendors')}
+            />
           )}
 
           {/* Pagination */}
@@ -311,6 +318,21 @@ export const VendorGroupsList = () => {
           }}
         />
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false, groupId: null, groupName: null })}
+        onConfirm={handleConfirmDelete}
+        title={t('vendorGroups:deleteConfirmTitle', 'Delete Vendor Group')}
+        message={t(
+          'vendorGroups:deleteConfirmMessage',
+          `Are you sure you want to delete "${confirmModal.groupName}"? This action cannot be undone.`
+        )}
+        confirmText={t('common:delete')}
+        cancelText={t('common:cancel')}
+        variant="danger"
+      />
     </>
   );
 };

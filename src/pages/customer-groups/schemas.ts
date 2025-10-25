@@ -16,6 +16,7 @@ export const getCustomerGroupSchema = () =>
       .string()
       .min(2, t('customerGroup.nameLength') || 'Name must be between 2 and 120 characters')
       .max(120, t('customerGroup.nameLength') || 'Name must be between 2 and 120 characters'),
+    status: z.number(), // 0 = inactive, 1 = active
   });
 
 export type CustomerGroupFormData = z.infer<ReturnType<typeof getCustomerGroupSchema>>;

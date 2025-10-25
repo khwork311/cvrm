@@ -1,6 +1,6 @@
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { AbilityContext } from './AbilityContext';
-import { defineAbilitiesFor, AppAbility } from './ability';
+import { AppAbility, defineAbilitiesFor } from './ability';
 
 interface AbilityProviderProps {
   children: ReactNode;
@@ -15,9 +15,5 @@ export const AbilityProvider = ({ children, userRole = 'guest' }: AbilityProvide
     setAbility(defineAbilitiesFor(userRole));
   }, [userRole]);
 
-  return (
-    <AbilityContext.Provider value={ability}>
-      {children}
-    </AbilityContext.Provider>
-  );
+  return <AbilityContext.Provider value={ability}>{children}</AbilityContext.Provider>;
 };

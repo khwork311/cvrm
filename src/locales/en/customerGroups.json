@@ -34,5 +34,19 @@
   "assigning": "Assigning...",
   "all": "All",
   "active": "Active",
-  "inactive": "Inactive"
+  "inactive": "Inactive",
+  "subtitle": "Manage and organize customer groups",
+  "nameColumn": "Name",
+  "customersCount": "Customers",
+  "viewCustomers": "View Customers",
+  "assignCustomers": "Assign Customers",
+  "noGroupsMatchFilters": "No customer groups match your current filters",
+  "noGroupsCreated": "No customer groups have been created yet",
+  "createFirstGroup": "Create First Group",
+  "resetFilters": "Reset Filters",
+  "statusUpdated": "Status updated successfully",
+  "statusUpdateError": "Failed to update status",
+  "confirmToggle": "Confirm Status Change",
+  "deactivateConfirm": "Are you sure you want to deactivate the group \"{{group}}\"?",
+  "activateConfirm": "Are you sure you want to activate the group \"{{group}}\"?"
 }

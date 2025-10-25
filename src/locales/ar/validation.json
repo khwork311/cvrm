@@ -10,6 +10,7 @@
   "digits": "يجب أن يحتوي على أرقام فقط",
   "exactDigits": "يجب أن يكون {{count}} رقمًا بالضبط",
   "maxChars": "يجب ألا يتجاوز {{max}} حرفًا",
+  "passwordMinLength": "كلمة المرور يجب أن تكون على الأقل 8 أحرف",
   "company": {
     "nameRequired": "اسم الشركة مطلوب",
     "nameLength": "يجب أن يكون الاسم بين 2 و 120 حرفًا",
@@ -50,7 +51,9 @@
     "phoneInvalid": "يجب أن يحتوي رقم الهاتف على أرقام وأحرف صالحة فقط (+، -، مسافات، أقواس)",
     "emailRequired": "البريد الإلكتروني مطلوب",
     "emailInvalid": "صيغة البريد الإلكتروني غير صحيحة",
-    "taxNumberRequired": "الرقم الضريبي مطلوب"
+    "taxNumberRequired": "الرقم الضريبي مطلوب",
+    "customerGroupRequired": "مجموعة العملاء مطلوبة",
+    "statusRequired": "الحالة مطلوبة"
   },
   "plan": {
     "titleEnRequired": "العنوان (بالإنجليزية) مطلوب",
@@ -68,12 +71,14 @@
   "customerGroup": {
     "nameLength": "يجب أن يكون الاسم بين 2 و 120 حرفًا",
     "groupRequired": "الرجاء اختيار مجموعة عملاء",
-    "customerRequired": "الرجاء اختيار عميل"
+    "customerRequired": "الرجاء اختيار عميل",
+    "statusRequired": "الحالة مطلوبة"
   },
   "vendorGroup": {
     "nameLength": "يجب أن يكون الاسم بين 2 و 120 حرفًا",
     "groupRequired": "الرجاء اختيار مجموعة موردين",
-    "vendorRequired": "الرجاء اختيار مورد"
+    "vendorRequired": "الرجاء اختيار مورد",
+    "statusRequired": "الحالة مطلوبة"
   },
   "user": {
     "nameMinLength": "الاسم يجب أن يكون على الأقل 2 أحرف",

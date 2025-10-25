@@ -1,7 +1,9 @@
+import { EmptyState } from '@/components/common/EmptyState';
 import Select from '@/components/form/Select';
 import Badge from '@/components/ui/badge/Badge';
-import { TableActionsDropdown, type TableAction } from '@/components/ui/dropdown/TableActionsDropdown';
+import { ConfirmationModal } from '@/components/ui/modal/ConfirmationModal';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
+import { useToast } from '@/context/ToastContext';
 import { useDebounce } from '@/hooks/useDebounce';
 import { PencilIcon } from '@/icons';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -30,11 +32,17 @@ type StatusFilter = 'all' | '1' | '0';
 export const Addresses = () => {
   const { t } = useTranslation(['addresses', 'common']);
   const { companyId } = useParams<{ companyId: string }>();
+  const toast = useToast();
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [showModal, setShowModal] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    addressId: number | null;
+    action: 'activate' | 'deactivate' | null;
+  }>({ isOpen: false, addressId: null, action: null });
 
   const debouncedSearch = useDebounce(search);
 
@@ -53,12 +61,26 @@ export const Addresses = () => {
     { value: '0', label: t('common:notActive') },
   ];
 
-  const toggleStatus = async (id: number) => {
+  const handleConfirmStatusChange = async () => {
+    if (!confirmModal.addressId) return;
+
     try {
-      await toggleTrigger(id);
+      await toggleTrigger(confirmModal.addressId);
       mutate();
+      toast.success(
+        confirmModal.action === 'activate'
+          ? t('addresses:activateSuccess', 'Address activated successfully')
+          : t('addresses:deactivateSuccess', 'Address deactivated successfully')
+      );
     } catch (error) {
       console.error('Error toggling address status:', error);
+      toast.error(
+        confirmModal.action === 'activate'
+          ? t('addresses:activateError', 'Failed to activate address')
+          : t('addresses:deactivateError', 'Failed to deactivate address')
+      );
+    } finally {
+      setConfirmModal({ isOpen: false, addressId: null, action: null });
     }
   };
 
@@ -124,7 +146,7 @@ export const Addresses = () => {
       </div>
 
       {/* Table */}
-      <div className="mt-6 overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+      <div className="mt-6 overflow-x-auto overflow-y-visible rounded-xl border border-gray-200 dark:border-gray-700">
         <Table className="min-w-[1000px]">
           {/* Table Header */}
           <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
@@ -208,29 +230,31 @@ export const Addresses = () => {
                 </TableCell>
 
                 <TableCell className="text-theme-sm px-5 py-4 text-center">
-                  <Badge variant="light" color={address.status === 1 ? 'success' : 'error'}>
-                    {address.status === 1 ? t('common:active') : t('common:inactive')}
-                  </Badge>
+                  <button
+                    onClick={() =>
+                      setConfirmModal({
+                        isOpen: true,
+                        addressId: address.id,
+                        action: address.status === 1 ? 'deactivate' : 'activate',
+                      })
+                    }
+                    className="cursor-pointer transition-opacity hover:opacity-80"
+                    title={address.status === 1 ? t('common:deactivate') : t('common:activate')}
+                  >
+                    <Badge variant="light" color={address.status === 1 ? 'success' : 'error'}>
+                      {address.status === 1 ? t('common:active') : t('common:inactive')}
+                    </Badge>
+                  </button>
                 </TableCell>
 
                 <TableCell className="px-5 py-4 text-center">
-                  <TableActionsDropdown
-                    actions={
-                      [
-                        {
-                          label: t('common:edit'),
-                          onClick: () => handleEdit(address),
-                          icon: <PencilIcon className="h-4 w-4" />,
-                          variant: 'primary',
-                        },
-                        {
-                          label: address.status === 1 ? t('common:deactivate') : t('common:activate'),
-                          onClick: () => toggleStatus(address.id),
-                          variant: address.status === 1 ? 'danger' : 'success',
-                        },
-                      ] as TableAction[]
-                    }
-                  />
+                  <button
+                    onClick={() => handleEdit(address)}
+                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-blue-700 hover:shadow-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                    title={t('common:edit')}
+                  >
+                    <PencilIcon className="h-4 w-4" />
+                  </button>
                 </TableCell>
               </TableRow>
             ))}
@@ -239,13 +263,10 @@ export const Addresses = () => {
       </div>
 
       {addresses.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-4 py-10">
-          <img src="/images/error/404.svg" alt="404" className="dark:hidden" />
-          <img src="/images/error/404-dark.svg" alt="404" className="hidden dark:block" />
-          <p className="text-center text-2xl font-semibold text-gray-500 dark:text-gray-400">
-            {t('addresses:noAddressesFound', 'No addresses found')}
-          </p>
-        </div>
+        <EmptyState
+          title={t('addresses:noAddressesFound', 'No addresses found')}
+          description={t('addresses:addFirstAddress', 'Add your first address to get started')}
+        />
       )}
 
       {/* Modal for Create/Edit */}
@@ -261,6 +282,26 @@ export const Addresses = () => {
           }}
         />
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false, addressId: null, action: null })}
+        onConfirm={handleConfirmStatusChange}
+        title={
+          confirmModal.action === 'activate'
+            ? t('addresses:activateConfirmTitle', 'Activate Address')
+            : t('addresses:deactivateConfirmTitle', 'Deactivate Address')
+        }
+        message={
+          confirmModal.action === 'activate'
+            ? t('addresses:activateConfirmMessage', 'Are you sure you want to activate this address?')
+            : t('addresses:deactivateConfirmMessage', 'Are you sure you want to deactivate this address?')
+        }
+        confirmText={confirmModal.action === 'activate' ? t('common:activate') : t('common:deactivate')}
+        cancelText={t('common:cancel')}
+        variant={confirmModal.action === 'activate' ? 'success' : 'danger'}
+      />
     </div>
   );
 };
@@ -274,7 +315,7 @@ interface AddressModalProps {
 }
 
 const AddressModal: React.FC<AddressModalProps> = ({ address, companyId, onClose, onSave }) => {
-  const { t } = useTranslation(['addresses', 'common']);
+  const { t, i18n } = useTranslation(['addresses', 'common']);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedCountryId, setSelectedCountryId] = useState<string>(address?.country_id?.toString() || '');
 
@@ -283,8 +324,11 @@ const AddressModal: React.FC<AddressModalProps> = ({ address, companyId, onClose
   const { data: countriesData } = useCountries();
   const { data: citiesData } = useCities(selectedCountryId ? Number(selectedCountryId) : null);
 
-  const countries = countriesData?.map((c) => ({ value: c.id.toString(), label: c.name_en })) || [];
-  const cities = citiesData?.map((c) => ({ value: c.id.toString(), label: c.name_en })) || [];
+  const countries =
+    countriesData?.map((c) => ({ value: c.id.toString(), label: i18n.language === 'ar' ? c.name_ar! : c.name_en! })) ||
+    [];
+  const cities =
+    citiesData?.map((c) => ({ value: c.id.toString(), label: i18n.language === 'ar' ? c.name_ar! : c.name_en! })) || [];
 
   const {
     register,
@@ -339,6 +383,7 @@ const AddressModal: React.FC<AddressModalProps> = ({ address, companyId, onClose
               <Controller
                 name="country_id"
                 control={control}
+                disabled={countries.length === 0}
                 render={({ field }) => (
                   <Select
                     options={countries}

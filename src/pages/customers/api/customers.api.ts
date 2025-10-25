@@ -26,7 +26,7 @@ export interface Customer {
   phone_number: string;
   email?: string; // Email is at root level in API response
   tax_number: string;
-  customer_group_id?: number;
+  group_id?: string;
   company?: Company;
   user?: User;
   groups?: Array<{
@@ -60,8 +60,25 @@ export interface CreateCustomerData {
   role_id: number;
   name: string; // User name
   password?: string; // Password for user account
-  group_id?: number;
-  status?: number;
+  group_id?: string;
+  status?: string;
+}
+
+export interface InviteCustomerData {
+  company_id: number;
+  email: string;
+}
+
+export interface RegisterFromInvitationData {
+  token: string;
+  company_id: number;
+  name_en: string;
+  name_ar: string;
+  phone_number: string;
+  email: string;
+  tax_number: string;
+  password: string;
+  password_confirmation: string;
 }
 
 export interface UpdateCustomerData {
@@ -152,6 +169,22 @@ export const customersApi = {
    */
   create: (customerData: CreateCustomerData): Promise<ApiResponse<Customer>> => {
     return post('/customers', customerData);
+  },
+
+  /**
+   * Invite new customer
+   * POST /api/customers/invite
+   */
+  invite: (customerData: InviteCustomerData): Promise<ApiResponse<Customer>> => {
+    return post('/customers/invite', customerData);
+  },
+
+  /**
+   * Invite new customer
+   * POST /api/customers/register
+   */
+  registerFromInvitation: (customerData: RegisterFromInvitationData): Promise<ApiResponse<Customer>> => {
+    return put('/customers/register', customerData);
   },
 
   /**

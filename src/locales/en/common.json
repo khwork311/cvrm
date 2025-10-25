@@ -30,10 +30,14 @@
   "saving": "Saving...",
   "creating": "Creating...",
   "showing": "showing",
+  "to": "to",
   "of": "of",
+  "results": "results",
+  "previous": "Previous",
   "prev": "previous",
-  "next": "next",
+  "next": "Next",
   "resetFilters": "Reset Filters",
+  "allStatuses": "All Statuses",
   "firstNameEn": "First Name (EN)",
   "firstNameAr": "First Name (AR)",
   "lastNameEn": "Last Name (EN)",
@@ -51,5 +55,6 @@
   "editProfile": "Edit profile",
   "accountSettings": "Account settings",
   "support": "Support",
-  "logout": "Logout"
+  "logout": "Logout",
+  "validationError": "Validation error"
 }

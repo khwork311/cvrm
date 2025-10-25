@@ -1,4 +1,5 @@
 import Badge from '@/components/ui/badge/Badge';
+import Button from '@/components/ui/button/Button';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { Vendor } from '../api/vendors.api';
@@ -49,20 +50,18 @@ export const VendorUserAccessTab = ({ vendor }: VendorUserAccessTabProps) => {
                   </p>
                 )}
                 <div className="flex gap-2">
-                  <Link
-                    to={`/vendors/${vendor.id}/invite`}
-                    className="inline-flex items-center rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600"
-                  >
-                    {t('vendors:resendInvitation')}
+                  <Link to={`/vendors/${vendor.id}/invite`}>
+                    <Button variant="primary" size="sm">
+                      {t('vendors:resendInvitation')}
+                    </Button>
                   </Link>
                 </div>
               </div>
             ) : (
-              <Link
-                to={`/vendors/${vendor.id}/invite`}
-                className="inline-flex items-center rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600"
-              >
-                {t('vendors:sendInvitation')}
+              <Link to={`/vendors/${vendor.id}/invite`}>
+                <Button variant="primary" size="sm">
+                  {t('vendors:sendInvitation')}
+                </Button>
               </Link>
             )}
           </div>

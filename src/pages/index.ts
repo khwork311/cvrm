@@ -1,8 +1,8 @@
 // Auth Pages
-export { default as SignIn } from '@/pages/AuthPages/SignIn';
-export { default as SignUp } from '@/pages/AuthPages/SignUp';
 export { default as ForgotPassword } from '@/pages/AuthPages/ForgotPassword';
 export { default as ResetPassword } from '@/pages/AuthPages/ResetPassword';
+export { default as SignIn } from '@/pages/AuthPages/SignIn';
+export { default as SignUp } from '@/pages/AuthPages/SignUp';
 
 // Dashboard
 export { default as Home } from '@/pages/Dashboard/Home';
@@ -15,7 +15,6 @@ export { CreateCompany } from '@/pages/companies/CompanyForm';
 export { ContactPersons } from '@/pages/companies/ContactPersons';
 
 // Customers
-export { CustomerForm } from '@/pages/customers/CustomerForm';
 export { CustomersList } from '@/pages/customers/CustomersList';
 
 // Customer Groups

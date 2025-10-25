@@ -10,28 +10,28 @@
   "viewDetails": "عرض التفاصيل",
   "formDescription": "إنشاء أو تعديل معلومات المورد",
   "detailDescription": "عرض تفاصيل المورد وإدارة المعلومات",
-  
+
   "allVendors": "جميع الموردين",
   "linkedToUser": "مرتبط بمستخدم",
   "notLinkedToUser": "غير مرتبط",
-  
+
   "nameColumn": "الاسم",
   "emailColumn": "البريد الإلكتروني",
   "phoneColumn": "الهاتف",
   "taxNumberColumn": "الرقم الضريبي",
   "invitationStatus": "حالة الدعوة",
-  
+
   "nameEn": "الاسم (إنجليزي)",
   "nameAr": "الاسم (عربي)",
   "email": "البريد الإلكتروني",
   "phoneNumber": "رقم الهاتف",
   "taxNumber": "الرقم الضريبي",
-  
+
   "accepted": "مقبولة",
   "pending": "قيد الانتظار",
   "expired": "منتهية",
   "notInvited": "لم يتم الدعوة",
-  
+
   "sendInvitation": "إرسال دعوة",
   "resendInvitation": "إعادة إرسال الدعوة",
   "copyInviteLink": "نسخ رابط الدعوة",
@@ -50,7 +50,7 @@
   "invitationInfoItem1": "سيتم إرسال بريد إلكتروني برابط آمن إلى المورد",
   "invitationInfoItem2": "سينتهي صلاحية الرابط خلال 7 أيام",
   "invitationInfoItem3": "يمكن للمورد إنشاء حسابه وإكمال ملفه الشخصي",
-  
+
   "acceptInvitation": "قبول الدعوة",
   "acceptInvitationDescription": "أنشئ حسابك للوصول إلى بوابة الموردين",
   "welcomeVendor": "مرحباً!",
@@ -64,7 +64,7 @@
   "creatingAccount": "جاري إنشاء الحساب...",
   "invalidInvitation": "دعوة غير صالحة",
   "invalidInvitationDescription": "رابط الدعوة هذا غير صالح أو منتهي الصلاحية. يرجى الاتصال بالشركة للحصول على دعوة جديدة.",
-  
+
   "completeProfile": "أكمل ملفك الشخصي",
   "completeProfileDescription": "أضف عناوينك ومعلومات حسابك البنكي",
   "step1Title": "الخطوة 1: أضف عنوانك",
@@ -79,42 +79,57 @@
   "skipForNow": "تخطي الآن",
   "next": "التالي",
   "goToDashboard": "الذهاب إلى لوحة التحكم",
-  
+
   "overview": "نظرة عامة",
   "addresses": "العناوين",
   "bankAccounts": "الحسابات البنكية",
   "userAccess": "المستخدم والوصول",
-  
+
   "basicInfo": "المعلومات الأساسية",
   "invitationInfo": "معلومات الدعوة",
   "invitedAt": "تاريخ الدعوة",
   "expiresAt": "تنتهي في",
-  
+
   "addAddress": "إضافة عنوان",
   "editAddress": "تعديل العنوان",
   "addressType": "نوع العنوان",
   "addressType_billing": "الفواتير",
   "addressType_shipping": "الشحن",
   "addressType_other": "أخرى",
+  "allTypes": "جميع الأنواع",
   "street": "الشارع",
+  "streetName": "اسم الشارع",
   "city": "المدينة",
   "country": "الدولة",
   "postalCode": "الرمز البريدي",
+  "buildingNumber": "رقم المبنى",
+  "addressName": "اسم العنوان",
   "phone": "الهاتف",
   "isDefault": "افتراضي",
   "setAsDefault": "تعيين كافتراضي",
   "selectCountry": "اختر الدولة",
   "selectCity": "اختر المدينة",
-  
+  "noAddressesDescription": "أضف عناوين لإدارة مواقع الموردين",
+
   "addBankAccount": "إضافة حساب بنكي",
   "editBankAccount": "تعديل الحساب البنكي",
   "bankName": "اسم البنك",
+  "bankNameEn": "اسم البنك (إنجليزي)",
+  "bankNameAr": "اسم البنك (عربي)",
   "accountHolder": "صاحب الحساب",
+  "accountHolderName": "اسم صاحب الحساب",
   "accountNumber": "رقم الحساب",
+  "ibanNumber": "رقم الآيبان",
   "ibanOrAccount": "رقم الآيبان / الحساب",
+  "swiftCode": "رمز السويفت",
   "swift": "رمز السويفت",
+  "branch": "الفرع",
+  "branchEn": "الفرع (إنجليزي)",
+  "branchAr": "الفرع (عربي)",
+  "bankCountry": "دولة البنك",
   "currency": "العملة",
-  
+  "noBankAccountsDescription": "أضف حسابات بنكية لإدارة مدفوعات الموردين",
+
   "linkedUser": "مستخدم مرتبط",
   "noUserLinked": "لا يوجد مستخدم مرتبط",
   "noUserLinkedDescription": "لم يقبل هذا المورد الدعوة بعد أو لم ينشئ حساباً.",
@@ -123,14 +138,23 @@
   "userId": "معرف المستخدم",
   "userAccessDescription": "المورد لديه وصول إلى البوابة ويمكنه إدارة ملفه الشخصي.",
   "invitationPending": "دعوة قيد الانتظار",
-  
+
   "noVendorsFound": "لم يتم العثور على موردين",
   "noAddressesFound": "لم يتم العثور على عناوين",
   "noBankAccountsFound": "لم يتم العثور على حسابات بنكية",
   "vendorNotFound": "لم يتم العثور على المورد",
   "errorLoadingVendors": "فشل تحميل الموردين. يرجى المحاولة مرة أخرى.",
-  
+
   "requiredFields": "الحقول المطلوبة",
   "accountCreatedSuccessfully": "تم إنشاء الحساب بنجاح!",
-  "failedToCreateAccount": "فشل إنشاء الحساب. يرجى المحاولة مرة أخرى."
+  "failedToCreateAccount": "فشل إنشاء الحساب. يرجى المحاولة مرة أخرى.",
+  "noVendorsMatchFilters": "لا توجد موردين تطابق عوامل التصفية الحالية",
+  "noVendorsCreated": "لم يتم إنشاء أي موردين بعد",
+  "createFirstVendor": "إنشاء أول مورد",
+  "resetFilters": "إعادة تعيين الفلاتر",
+  "statusUpdated": "تم تحديث الحالة بنجاح",
+  "statusUpdateError": "فشل في تحديث الحالة",
+  "confirmToggle": "تأكيد تغيير الحالة",
+  "deactivateConfirm": "هل أنت متأكد أنك تريد تعطيل المورد \"{{vendor}}\"؟",
+  "activateConfirm": "هل أنت متأكد أنك تريد تفعيل المورد \"{{vendor}}\"؟"
 }

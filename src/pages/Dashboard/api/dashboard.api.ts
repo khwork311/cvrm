@@ -1,6 +1,6 @@
 /**
  * Dashboard API Service
- * 
+ *
  * API calls related to dashboard statistics and analytics
  */
 

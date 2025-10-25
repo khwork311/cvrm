@@ -2,8 +2,4 @@
  * Dashboard API Exports
  */
 
-export {
-  dashboardApi,
-  dashboardApi as default,
-  type DashboardStats,
-} from './dashboard.api';
+export { dashboardApi, dashboardApi as default, type DashboardStats } from './dashboard.api';

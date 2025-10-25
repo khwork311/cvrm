@@ -98,7 +98,7 @@ export const AcceptInvitation = () => {
                   id="name_en"
                   type="text"
                   {...register('name_en')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.name_en && (
                   <p className="mt-1 text-sm text-red-500">{t(errors.name_en.message || 'validation:required')}</p>
@@ -113,7 +113,7 @@ export const AcceptInvitation = () => {
                   id="name_ar"
                   type="text"
                   {...register('name_ar')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.name_ar && (
                   <p className="mt-1 text-sm text-red-500">{t(errors.name_ar.message || 'validation:required')}</p>
@@ -128,7 +128,7 @@ export const AcceptInvitation = () => {
                   id="email"
                   type="email"
                   {...register('email')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-500">{t(errors.email.message || 'validation:invalidEmail')}</p>
@@ -143,7 +143,7 @@ export const AcceptInvitation = () => {
                   id="tax_number"
                   type="text"
                   {...register('tax_number')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.tax_number && (
                   <p className="mt-1 text-sm text-red-500">{t(errors.tax_number.message || 'validation:required')}</p>
@@ -158,37 +158,47 @@ export const AcceptInvitation = () => {
                   id="password"
                   type="password"
                   {...register('password')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.password && (
-                  <p className="mt-1 text-sm text-red-500">{t(errors.password.message || 'validation:passwordMinLength')}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {t(errors.password.message || 'validation:passwordMinLength')}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="password_confirmation" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label
+                  htmlFor="password_confirmation"
+                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   {t('vendors:confirmPassword')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="password_confirmation"
                   type="password"
                   {...register('password_confirmation')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.password_confirmation && (
-                  <p className="mt-1 text-sm text-red-500">{t(errors.password_confirmation.message || 'validation:passwordMismatch')}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {t(errors.password_confirmation.message || 'validation:passwordMismatch')}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="phone_number" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label
+                  htmlFor="phone_number"
+                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   {t('vendors:phoneNumber')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="phone_number"
                   type="tel"
                   {...register('phone_number')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.phone_number && (
                   <p className="mt-1 text-sm text-red-500">{t(errors.phone_number.message || 'validation:required')}</p>

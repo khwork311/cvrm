@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { AbilityContext } from './AbilityContext';
-import { defineAbilitiesFromPermissions, defineAbilitiesFor, AppAbility, createAbility } from './ability';
+import { AppAbility, createAbility, defineAbilitiesFor, defineAbilitiesFromPermissions } from './ability';
 
 interface AuthAbilityProviderProps {
   children: ReactNode;
@@ -32,9 +32,5 @@ export const AuthAbilityProvider = ({ children }: AuthAbilityProviderProps) => {
     }
   }, [user, isLoading]);
 
-  return (
-    <AbilityContext.Provider value={ability}>
-      {children}
-    </AbilityContext.Provider>
-  );
+  return <AbilityContext.Provider value={ability}>{children}</AbilityContext.Provider>;
 };

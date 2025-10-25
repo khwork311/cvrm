@@ -49,7 +49,7 @@ export interface CompanyFilters {
   status?: string;
   plan_id?: number;
   page?: number;
-  limit?: number;
+  per_page?: number;
 }
 
 export const companiesApi = {
@@ -59,7 +59,15 @@ export const companiesApi = {
   getAll: (
     filters?: CompanyFilters
   ): Promise<
-    ApiResponse<{ current_page: number; data: Company[]; total: number; per_page: number; last_page: number; from: number | null; to: number | null }>
+    ApiResponse<{
+      current_page: number;
+      data: Company[];
+      total: number;
+      per_page: number;
+      last_page: number;
+      from: number | null;
+      to: number | null;
+    }>
   > => {
     const params = new URLSearchParams();
     if (filters) {
@@ -80,7 +88,17 @@ export const companiesApi = {
   /**
    * Get companies dropdown (simplified list)
    */
-  getDropdown: (): Promise<ApiResponse<{ current_page: number; data: Company[]; total: number; per_page: number; last_page: number; from: number | null; to: number | null }>> => {
+  getDropdown: (): Promise<
+    ApiResponse<{
+      current_page: number;
+      data: Company[];
+      total: number;
+      per_page: number;
+      last_page: number;
+      from: number | null;
+      to: number | null;
+    }>
+  > => {
     return get('/companies/dropdown');
   },
 
@@ -166,7 +184,19 @@ export const contactsApi = {
   /**
    * Get all contacts for a company
    */
-  getAll: (filters?: ContactFilters): Promise<ApiResponse<{ current_page: number; data: ContactPerson[]; total: number; per_page: number; last_page: number; from: number | null; to: number | null }>> => {
+  getAll: (
+    filters?: ContactFilters
+  ): Promise<
+    ApiResponse<{
+      current_page: number;
+      data: ContactPerson[];
+      total: number;
+      per_page: number;
+      last_page: number;
+      from: number | null;
+      to: number | null;
+    }>
+  > => {
     const params = new URLSearchParams();
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
@@ -186,7 +216,10 @@ export const contactsApi = {
   /**
    * Create new contact
    */
-  create: (companyId: number, contactData: Omit<ContactPerson, 'id' | 'company_id'>): Promise<ApiResponse<ContactPerson>> => {
+  create: (
+    companyId: number,
+    contactData: Omit<ContactPerson, 'id' | 'company_id'>
+  ): Promise<ApiResponse<ContactPerson>> => {
     return post(`/contacts`, { ...contactData, company_id: companyId });
   },
 
@@ -240,7 +273,17 @@ export const bankAccountsApi = {
   getAll: (
     companyId: number,
     filters?: BankAccountFilters
-  ): Promise<ApiResponse<{ current_page: number; data: BankAccount[]; total: number; per_page: number; last_page: number; from: number | null; to: number | null }>> => {
+  ): Promise<
+    ApiResponse<{
+      current_page: number;
+      data: BankAccount[];
+      total: number;
+      per_page: number;
+      last_page: number;
+      from: number | null;
+      to: number | null;
+    }>
+  > => {
     const params = new URLSearchParams();
     params.append('company_id', String(companyId));
     if (filters) {
@@ -249,6 +292,23 @@ export const bankAccountsApi = {
       });
     }
     return get(`/bank-accounts?${params.toString()}`);
+  },
+
+  /**
+   * Get all countries
+   */
+  getAllCountries: (): Promise<
+    ApiResponse<{
+      current_page: number;
+      data: Country[];
+      total: number;
+      per_page: number;
+      last_page: number;
+      from: number | null;
+      to: number | null;
+    }>
+  > => {
+    return get('/countries');
   },
 
   /**
@@ -261,7 +321,10 @@ export const bankAccountsApi = {
   /**
    * Create new bank account
    */
-  create: (companyId: number, accountData: Omit<BankAccount, 'id' | 'company_id'>): Promise<ApiResponse<BankAccount>> => {
+  create: (
+    companyId: number,
+    accountData: Omit<BankAccount, 'id' | 'company_id'>
+  ): Promise<ApiResponse<BankAccount>> => {
     return post(`/bank-accounts`, { ...accountData, company_id: companyId });
   },
 
@@ -323,7 +386,20 @@ export const addressesApi = {
   /**
    * Get all addresses for a company
    */
-  getAll: (companyId: number, filters?: AddressFilters): Promise<ApiResponse<{ current_page: number; data: Address[]; total: number; per_page: number; last_page: number; from: number | null; to: number | null }>> => {
+  getAll: (
+    companyId: number,
+    filters?: AddressFilters
+  ): Promise<
+    ApiResponse<{
+      current_page: number;
+      data: Address[];
+      total: number;
+      per_page: number;
+      last_page: number;
+      from: number | null;
+      to: number | null;
+    }>
+  > => {
     const params = new URLSearchParams();
     params.append('company_id', String(companyId));
     if (filters) {
@@ -386,7 +462,15 @@ export const countriesApi = {
    * Get all countries
    */
   getAll: async (): Promise<Country[]> => {
-    const response: ApiResponse<{ current_page: number; data: Country[]; total: number; per_page: number; last_page: number; from: number | null; to: number | null }> = await get('/countries');
+    const response: ApiResponse<{
+      current_page: number;
+      data: Country[];
+      total: number;
+      per_page: number;
+      last_page: number;
+      from: number | null;
+      to: number | null;
+    }> = await get('/countries');
     return response.data.data;
   },
 

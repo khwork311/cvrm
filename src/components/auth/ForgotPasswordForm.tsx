@@ -1,17 +1,15 @@
 import { useToast } from '@/context/ToastContext';
 import { useAuth } from '@/hooks/useAuth';
-import { useActionState, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { z } from 'zod';
 import { ChevronLeftIcon } from '../../icons';
 import { Input } from '../form';
 import Label from '../form/Label';
 import Button from '../ui/button/Button';
-
-const forgotPasswordSchema = z.object({
-  email: z.email('Invalid email address'),
-});
+import { ForgotPasswordFormData, forgotPasswordSchema } from './schemas';
 
 export default function ForgotPasswordForm() {
   const { t } = useTranslation(['auth', 'validation']);
@@ -19,29 +17,30 @@ export default function ForgotPasswordForm() {
   const { success, error: showError } = useToast();
 
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const formAction = async (_prevState: any, formData: FormData) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+  });
+
+  const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
-      const data = {
-        email: formData.get('email') as string,
-      };
-
-      // Validate with schema
-      const validatedData = forgotPasswordSchema.parse(data);
-
-      await forgotPassword(validatedData.email);
+      setIsSubmitting(true);
+      await forgotPassword(data.email);
       setIsSuccess(true);
       success(t('auth:forgotPasswordSuccess'));
-      return { success: true, errors: null };
     } catch (err: any) {
       console.error('Forgot password error:', err);
       const errorMessage = err.response?.data?.message || err.message || t('auth:forgotPasswordError');
       showError(errorMessage);
-      return { success: false, errors: err.errors || err.message };
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
-  const [_state, formActionDispatch, isPending] = useActionState(formAction, { success: false, errors: null });
 
   if (isSuccess) {
     return (
@@ -95,20 +94,26 @@ export default function ForgotPasswordForm() {
             <p className="text-sm text-gray-500 dark:text-gray-400">{t('auth:forgotPasswordDescription')}</p>
           </div>
           <div>
-            <form action={formActionDispatch}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="space-y-6">
                 {/* Email Field */}
                 <div>
                   <Label htmlFor="email">
                     {t('auth:email')} <span className="text-error-500">*</span>
                   </Label>
-                  <Input name="email" id="email" type="email" placeholder={t('auth:emailPlaceholder')} />
+                  <Input
+                    {...register('email')}
+                    id="email"
+                    type="email"
+                    placeholder={t('auth:emailPlaceholder')}
+                    error={errors.email?.message}
+                  />
                 </div>
 
                 {/* Submit Button */}
                 <div>
-                  <Button className="w-full" size="sm" disabled={isPending}>
-                    {isPending ? t('auth:sending') : t('auth:sendResetLink')}
+                  <Button className="w-full" size="sm" disabled={isSubmitting}>
+                    {isSubmitting ? t('auth:sending') : t('auth:sendResetLink')}
                   </Button>
                 </div>
               </div>

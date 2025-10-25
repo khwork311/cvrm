@@ -1,6 +1,6 @@
 /**
  * Companies SWR Hooks
- * 
+ *
  * Custom hooks for data fetching using SWR
  */
 
@@ -13,7 +13,7 @@ import { companiesApi, type Company, type CompanyFilters } from '../api/companie
  */
 export function useCompanies(filters?: CompanyFilters) {
   const key = filters ? ['companies', filters] : 'companies';
-  
+
   return useSWR(key, () => companiesApi.getAll(filters), {
     revalidateOnFocus: false,
     keepPreviousData: true,
@@ -24,25 +24,18 @@ export function useCompanies(filters?: CompanyFilters) {
  * Hook to fetch a single company by ID
  */
 export function useCompany(id: number | null) {
-  return useSWR(
-    id ? ['company', id] : null,
-    () => companiesApi.getById(id!),
-    {
-      revalidateOnFocus: false,
-    }
-  );
+  return useSWR(id ? ['company', id] : null, () => companiesApi.getById(id!), {
+    revalidateOnFocus: false,
+  });
 }
 
 /**
  * Hook to create a new company
  */
 export function useCreateCompany() {
-  return useSWRMutation(
-    'companies',
-    async (_key, { arg }: { arg: FormData }) => {
-      return companiesApi.create(arg);
-    }
-  );
+  return useSWRMutation('companies', async (_key, { arg }: { arg: FormData }) => {
+    return companiesApi.create(arg);
+  });
 }
 
 /**
@@ -61,22 +54,16 @@ export function useUpdateCompany() {
  * Hook to toggle company status
  */
 export function useToggleCompanyStatus() {
-  return useSWRMutation(
-    'companies',
-    async (_key, { arg }: { arg: number }) => {
-      return companiesApi.toggleStatus(arg);
-    }
-  );
+  return useSWRMutation('companies', async (_key, { arg }: { arg: number }) => {
+    return companiesApi.toggleStatus(arg);
+  });
 }
 
 /**
  * Hook to activate company
  */
 export function useActivateCompany() {
-  return useSWRMutation(
-    'companies',
-    async (_key, { arg }: { arg: number }) => {
-      return companiesApi.activate(arg);
-    }
-  );
+  return useSWRMutation('companies', async (_key, { arg }: { arg: number }) => {
+    return companiesApi.activate(arg);
+  });
 }

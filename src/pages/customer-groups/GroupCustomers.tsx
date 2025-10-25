@@ -1,6 +1,5 @@
 import PageMeta from '@/components/common/PageMeta';
 import Badge from '@/components/ui/badge/Badge';
-import { TableActionsDropdown, type TableAction } from '@/components/ui/dropdown/TableActionsDropdown';
 import { ConfirmationModal } from '@/components/ui/modal/ConfirmationModal';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/context/ToastContext';
@@ -99,9 +98,7 @@ export const GroupCustomers = () => {
         {/* Header */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-semibold text-gray-800 dark:text-white/90">
-              {group.name_en}
-            </h1>
+            <h1 className="text-3xl font-semibold text-gray-800 dark:text-white/90">{group.name_en}</h1>
             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400" dir="rtl">
               {group.name_ar}
             </p>
@@ -121,7 +118,7 @@ export const GroupCustomers = () => {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+        <div className="overflow-x-auto overflow-y-visible rounded-xl border border-gray-200 dark:border-gray-700">
           <Table className="min-w-[600px]">
             {/* Table Header */}
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
@@ -157,22 +154,17 @@ export const GroupCustomers = () => {
                     </TableCell>
 
                     <TableCell className="text-theme-sm px-5 py-4 text-start text-gray-600 dark:text-gray-400">
-                      <div dir="rtl">{customer.name_ar}</div>
+                      <div dir="auto">{customer.name_ar}</div>
                     </TableCell>
 
                     <TableCell className="px-5 py-4 text-center">
-                      <TableActionsDropdown
-                        actions={
-                          [
-                            {
-                              label: t('common:remove'),
-                              onClick: () => handleDetachClick(customer.id, customer.name_en),
-                              icon: <TrashBinIcon className="h-4 w-4" />,
-                              variant: 'danger',
-                            },
-                          ] as TableAction[]
-                        }
-                      />
+                      <button
+                        onClick={() => handleDetachClick(customer.id, customer.name_en)}
+                        className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-red-700 hover:shadow-md focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                        title={t('common:remove')}
+                      >
+                        <TrashBinIcon className="h-4 w-4" />
+                      </button>
                     </TableCell>
                   </TableRow>
                 ))
@@ -185,10 +177,7 @@ export const GroupCustomers = () => {
                       <p className="text-center text-xl font-semibold text-gray-500 dark:text-gray-400">
                         {t('customerGroups:noCustomersInGroup', 'No customers in this group yet')}
                       </p>
-                      <Link
-                        to={`/customer-groups/${groupId}/assign`}
-                        className="text-blue-500 hover:underline"
-                      >
+                      <Link to={`/customer-groups/${groupId}/assign`} className="text-blue-500 hover:underline">
                         {t('customerGroups:addFirstCustomer', 'Add your first customer')}
                       </Link>
                     </div>

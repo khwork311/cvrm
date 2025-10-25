@@ -1,5 +1,5 @@
-import { Modal } from './index';
 import { useTranslation } from 'react-i18next';
+import { Modal } from './index';
 
 interface ConfirmationModalProps {
   isOpen: boolean;

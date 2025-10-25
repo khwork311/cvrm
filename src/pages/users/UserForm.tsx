@@ -6,15 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useDropdownRoles } from '../roles/hooks/useRoles';
 import { getUserSchema, type UserFormData } from './schemas';
-
-// Mock roles data - replace with actual API call
-const ROLES = [
-  { id: 1, name: 'Super Admin' },
-  { id: 2, name: 'Admin' },
-  { id: 3, name: 'Manager' },
-  { id: 4, name: 'Viewer' },
-];
 
 interface UserFormProps {
   mode: 'create' | 'update';
@@ -38,6 +31,8 @@ export const UserForm: React.FC<UserFormProps> = ({
   isLoading = false,
 }) => {
   const { t } = useTranslation(['users', 'common']);
+
+  const { data: dropdownRoles, isLoading: rolesLoading } = useDropdownRoles();
 
   const {
     register,
@@ -63,20 +58,19 @@ export const UserForm: React.FC<UserFormProps> = ({
         name: initialData.name,
         email: initialData.email,
         password: '',
-        role_id: initialData.role_id, // to be changed (role.role_name or so)
+        role_id: initialData.role_id,
       });
     }
   }, [initialData, reset]);
 
-  // to be changed
-  const roleOptions = ROLES.map((role) => ({
+  const roleOptions = dropdownRoles?.data.data.map((role) => ({
     value: role.id.toString(),
     label: role.name,
   }));
 
   const selectedRoleId = watch('role_id');
 
-  if (isLoading) {
+  if (isLoading || rolesLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
         <SectionLoading size="lg" text={t('common:loading')} />
@@ -135,8 +129,8 @@ export const UserForm: React.FC<UserFormProps> = ({
             {...register('role_id')}
             id="role_id"
             label={t('users:form.role')}
-            defaultValue={roleOptions[3].value}
-            options={roleOptions}
+            value={selectedRoleId.toString()}
+            options={roleOptions || []}
             placeholder={t('users:form.rolePlaceholder')}
             onChange={(v) => {
               setValue('role_id', +v);
@@ -150,7 +144,7 @@ export const UserForm: React.FC<UserFormProps> = ({
           <div className="mt-4 rounded-md bg-blue-50 p-4 dark:bg-blue-900/20">
             <p className="text-sm text-blue-700 dark:text-blue-300">
               {t('users:roleDescription', {
-                role: ROLES.find((role) => role.id === selectedRoleId)?.name,
+                role: dropdownRoles?.data.data.find((role) => role.id === selectedRoleId)?.name,
               })}
             </p>
           </div>

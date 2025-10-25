@@ -13,10 +13,10 @@ export const SendInvitation = () => {
   const { vendorId } = useParams<{ vendorId: string }>();
 
   const { data: apiVendorResponse, isLoading: isLoadingVendor } = useVendor(vendorId ? parseInt(vendorId) : null);
-  
+
   // Extract vendor data from API response
   const vendor = apiVendorResponse?.data;
-  
+
   const { trigger: sendInvitation, isMutating: isSending } = useSendInvitation();
 
   const {
@@ -112,7 +112,7 @@ export const SendInvitation = () => {
                 id="email"
                 type="email"
                 {...register('email')}
-                className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-500">{t(errors.email.message || 'validation:invalidEmail')}</p>

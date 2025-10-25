@@ -130,12 +130,7 @@ interface ProtectedPageProps {
   unauthorizedComponent?: ReactNode;
 }
 
-export function ProtectedPage({
-  action,
-  subject,
-  children,
-  unauthorizedComponent,
-}: ProtectedPageProps) {
+export function ProtectedPage({ action, subject, children, unauthorizedComponent }: ProtectedPageProps) {
   const canAccess = useCan(action, subject);
 
   if (unauthorizedComponent && !canAccess) {

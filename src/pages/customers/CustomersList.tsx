@@ -1,47 +1,45 @@
+import { EmptyState } from '@/components/common/EmptyState';
 import PageMeta from '@/components/common/PageMeta';
 import Select from '@/components/form/Select';
 import Badge from '@/components/ui/badge/Badge';
 import Button from '@/components/ui/button/Button';
-import { TableActionsDropdown, type TableAction } from '@/components/ui/dropdown/TableActionsDropdown';
 import { ConfirmationModal } from '@/components/ui/modal/ConfirmationModal';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/hooks/useAuth';
+import { useDebounce } from '@/hooks/useDebounce';
 import { PencilIcon } from '@/icons';
 import { PAGE_LIMIT } from '@/lib/constants';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useDebounce } from '@/hooks/useDebounce';
-import { useCustomers, useToggleCustomerStatus, useCreateCustomer, useUpdateCustomer } from './hooks/useCustomers';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { getCustomerSchema, type CustomerFormData } from './schemas';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useCustomerGroups } from '../customer-groups/hooks';
 import type { Customer } from './api/customers.api';
-import { useAuth } from '@/hooks/useAuth';
+import { InvitationModal } from './components/InvitationModal';
+import { useCreateCustomer, useCustomers, useToggleCustomerStatus, useUpdateCustomer } from './hooks/useCustomers';
+import { getCustomerSchema, type CustomerFormData } from './schemas';
 
 interface Option {
   value: string;
   label: string;
 }
-
 type StatusFilter = 'all' | '1' | '0';
-
 export const CustomersList = () => {
   const { t } = useTranslation(['customers', 'common']);
   const toast = useToast();
-
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [page, setPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
+  const [showInvitationModal, setShowInvitationModal] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
     customerId: number | null;
     action: 'activate' | 'deactivate' | null;
   }>({ isOpen: false, customerId: null, action: null });
-
   const debouncedSearch = useDebounce(search);
-
   const { data, isLoading, mutate } = useCustomers({
     search: debouncedSearch ? debouncedSearch : undefined,
     status: statusFilter !== 'all' ? Number(statusFilter) : undefined,
@@ -49,7 +47,6 @@ export const CustomersList = () => {
     per_page: PAGE_LIMIT,
   });
   const { trigger: toggleTrigger, isMutating: isToggling } = useToggleCustomerStatus();
-
   const customers = data?.data?.data;
   const paginationData = data?.data;
   const total = paginationData?.total || 0;
@@ -57,24 +54,21 @@ export const CustomersList = () => {
   const totalPages = paginationData?.last_page || 1;
   const from = paginationData?.from ?? 0;
   const to = paginationData?.to ?? 0;
-
   const statusOptions: Option[] = [
     { value: 'all', label: t('common:all') },
     { value: '1', label: t('common:active') },
     { value: '0', label: t('common:notActive') },
   ];
 
-  const handleToggleStatus = (id: number, currentStatus: 'active' | 'not active') => {
+  const handleToggleStatus = (id: number, currentStatus: '1' | '0') => {
     setConfirmModal({
       isOpen: true,
       customerId: id,
       action: currentStatus ? 'deactivate' : 'activate',
     });
   };
-
   const handleConfirmAction = async () => {
     if (!confirmModal.customerId || !confirmModal.action) return;
-
     try {
       await toggleTrigger({ id: confirmModal.customerId, status: confirmModal.action === 'activate' ? 1 : 0 });
       const successMessage =
@@ -91,26 +85,24 @@ export const CustomersList = () => {
       setConfirmModal({ isOpen: false, customerId: null, action: null });
     }
   };
-
   const handleCloseModal = () => {
     if (!isToggling) {
       setConfirmModal({ isOpen: false, customerId: null, action: null });
     }
   };
-
   const handleEdit = (customer: Customer) => {
     setEditingCustomer(customer);
     setShowModal(true);
   };
-
   const handleCreate = () => {
     setEditingCustomer(null);
     setShowModal(true);
   };
-
+  const handleInvite = () => {
+    setShowInvitationModal(true);
+  };
   // Check if search is being debounced (user is typing)
   const isSearching = search !== debouncedSearch;
-
   return (
     <>
       <PageMeta title={t('customers:title', 'Customers')} description={t('customers:title', 'Customers')} />
@@ -120,7 +112,6 @@ export const CustomersList = () => {
           <h1 className="text-3xl font-semibold text-gray-800 dark:text-white/90">
             {t('customers:title', 'Customers')}
           </h1>
-
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <div className="relative">
               <input
@@ -136,7 +127,6 @@ export const CustomersList = () => {
                 </div>
               )}
             </div>
-
             <Select
               options={statusOptions}
               defaultValue="all"
@@ -144,18 +134,22 @@ export const CustomersList = () => {
               onChange={(value) => setStatusFilter(value as StatusFilter)}
               className="dark:bg-dark-900"
             />
-
             <button
               onClick={handleCreate}
               className="flex shrink-0 items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600"
             >
               + {t('customers:createNew', 'Create Customer')}
             </button>
+            <button
+              onClick={handleInvite}
+              className="flex shrink-0 items-center justify-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600"
+            >
+              + {t('customers:inviteCustomer')}
+            </button>
           </div>
         </div>
-
         {/* Table for desktop */}
-        <div className="mt-6 hidden overflow-x-auto rounded-xl border border-gray-200 md:block dark:border-gray-700">
+        <div className="mt-6 hidden overflow-x-auto overflow-y-visible rounded-xl border border-gray-200 md:block dark:border-gray-700">
           <Table className="min-w-[1000px]">
             {/* Table Header */}
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
@@ -198,7 +192,6 @@ export const CustomersList = () => {
                 </TableCell>
               </TableRow>
             </TableHeader>
-
             {isLoading ? (
               <TableBody>
                 <TableRow>
@@ -217,47 +210,34 @@ export const CustomersList = () => {
                       </div>
                       <div className="text-theme-xs text-gray-500 dark:text-gray-400">{customer.name_ar}</div>
                     </TableCell>
-
                     <TableCell className="text-theme-sm px-5 py-4 text-gray-600 dark:text-gray-400">
                       {customer.phone_number}
                     </TableCell>
-
                     <TableCell className="text-theme-sm px-5 py-4 text-gray-600 dark:text-gray-400">
                       {customer.email || customer.user?.email || '-'}
                     </TableCell>
-
                     <TableCell className="text-theme-sm px-5 py-4 text-gray-600 dark:text-gray-400">
                       {customer.tax_number}
                     </TableCell>
-
                     <TableCell className="text-theme-sm px-5 py-4 text-center">
                       <Badge
                         variant="light"
-                        color={customer.status ? 'success' : 'error'}
-                        onClick={() => handleToggleStatus(customer.id, customer.status ? 'not active' : 'active')}
+                        color={customer?.user?.status ? 'success' : 'error'}
+                        onClick={() => handleToggleStatus(customer.id, customer?.user?.status ? '0' : '1')}
                       >
-                        {customer.status ? t('common:active') : t('common:inactive')}
+                        {customer?.user?.status ? t('common:active') : t('common:inactive')}
                       </Badge>
                     </TableCell>
 
                     <TableCell className="px-5 py-4 text-center">
-                      <TableActionsDropdown
-                        actions={
-                          [
-                            {
-                              label: t('common:edit'),
-                              onClick: () => handleEdit(customer),
-                              icon: <PencilIcon className="h-4 w-4" />,
-                              variant: 'primary',
-                            },
-                            {
-                              label: customer.status ? t('common:deactivate') : t('common:activate'),
-                              onClick: () => handleToggleStatus(customer.id, customer.status ? 'not active' : 'active'),
-                              variant: customer.status ? 'danger' : 'success',
-                            },
-                          ] as TableAction[]
-                        }
-                      />
+                      <button
+                        onClick={() => handleEdit(customer)}
+                        className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-blue-700 hover:shadow-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                        title={t('common:edit')}
+                      >
+                        <PencilIcon className="h-4 w-4" />
+                        {t('common:edit')}
+                      </button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -265,7 +245,6 @@ export const CustomersList = () => {
             )}
           </Table>
         </div>
-
         {/* Cards for mobile */}
         <div className="mt-6 grid grid-cols-1 gap-4 md:hidden">
           {customers?.map((customer) => (
@@ -280,10 +259,10 @@ export const CustomersList = () => {
                 </div>
                 <Badge
                   variant="light"
-                  color={customer.status ? 'success' : 'error'}
-                  onClick={() => handleToggleStatus(customer.id, customer.status ? 'not active' : 'active')}
+                  color={customer?.user?.status ? 'success' : 'error'}
+                  onClick={() => handleToggleStatus(customer.id, customer?.user?.status ? '0' : '1')}
                 >
-                  {customer.status ? t('common:active') : t('common:inactive')}
+                  {customer?.user?.status ? t('common:active') : t('common:inactive')}
                 </Badge>
               </div>
 
@@ -303,7 +282,6 @@ export const CustomersList = () => {
                   <span className="text-gray-600 dark:text-gray-400">{customer.tax_number}</span>
                 </div>
               </div>
-
               <div className="mt-5 border-t border-gray-100 pt-4 dark:border-gray-700">
                 <button
                   onClick={() => handleEdit(customer)}
@@ -316,17 +294,12 @@ export const CustomersList = () => {
             </div>
           ))}
         </div>
-
         {customers?.length === 0 && (
-          <div className="flex flex-col items-center justify-center gap-4 py-10">
-            <img src="/images/error/404.svg" alt="404" className="dark:hidden" />
-            <img src="/images/error/404-dark.svg" alt="404" className="hidden dark:block" />
-            <p className="text-center text-2xl font-semibold text-gray-500 dark:text-gray-400">
-              {t('customers:noCustomersFound', 'No customers found')}
-            </p>
-          </div>
+          <EmptyState
+            title={t('customers:noCustomersFound', 'No customers found')}
+            description={t('customers:noCustomersDescription', 'Get started by creating your first customer')}
+          />
         )}
-
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="mt-8 flex flex-col items-center justify-between gap-4 sm:flex-row">
@@ -360,7 +333,6 @@ export const CustomersList = () => {
           </div>
         )}
       </div>
-
       {/* Confirmation Modal */}
       <ConfirmationModal
         isOpen={confirmModal.isOpen}
@@ -381,7 +353,6 @@ export const CustomersList = () => {
         variant={confirmModal.action === 'activate' ? 'success' : 'danger'}
         isLoading={isToggling}
       />
-
       {/* Modal for Create/Edit */}
       {showModal && (
         <CustomerModal
@@ -394,10 +365,12 @@ export const CustomersList = () => {
           }}
         />
       )}
+
+      {/* Modal for Customer Invitaion */}
+      {showInvitationModal && <InvitationModal onClose={() => setShowInvitationModal(false)} />}
     </>
   );
 };
-
 // Customer Modal Component
 interface CustomerModalProps {
   customer: Customer | null;
@@ -406,20 +379,25 @@ interface CustomerModalProps {
 }
 
 const CustomerModal: React.FC<CustomerModalProps> = ({ customer, onClose, onSave }) => {
-  const { t } = useTranslation(['customers', 'common']);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t, i18n } = useTranslation(['customers', 'common']);
   const [apiErrors, setApiErrors] = useState<Record<string, string[]> | null>(null);
   const { user } = useAuth();
-  const userId = user?.id ?? 1;
   const toast = useToast();
 
-  const { trigger: createTrigger } = useCreateCustomer();
-  const { trigger: updateTrigger } = useUpdateCustomer();
+  const { data: customerGroups } = useCustomerGroups();
+  const { trigger: createTrigger, isMutating: isCreating } = useCreateCustomer();
+  const { trigger: updateTrigger, isMutating: isUpdating } = useUpdateCustomer();
+
+  const groupsData = customerGroups?.data?.data?.map((group) => ({
+    value: String(group.id),
+    label: i18n.language === 'ar' ? group.name_ar : group.name_en,
+  }));
 
   const {
     register,
+    control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<CustomerFormData>({
     resolver: zodResolver(getCustomerSchema()),
     defaultValues: {
@@ -428,13 +406,13 @@ const CustomerModal: React.FC<CustomerModalProps> = ({ customer, onClose, onSave
       phone_number: customer?.phone_number || '',
       email: customer?.email || customer?.user?.email || '',
       tax_number: customer?.tax_number || '',
-      customer_group_id: customer?.customer_group_id || 1,
+      group_id: customer?.group_id ? String(customer.group_id) : '',
+      status: customer?.user?.status ? String(customer.user.status) : '1',
     },
   });
 
   const onSubmit = async (data: CustomerFormData) => {
     try {
-      setIsSubmitting(true);
       setApiErrors(null); // Clear previous errors
 
       if (customer) {
@@ -447,40 +425,48 @@ const CustomerModal: React.FC<CustomerModalProps> = ({ customer, onClose, onSave
           email: data.email,
           tax_number: data.tax_number,
           role_id: customer.user?.role?.id || 3,
-          name: data.name_en,
+          name: data.name_en, // User name
         };
         await updateTrigger({ id: customer.id, data: updateData });
         toast.success(t('customers:updateSuccess', 'Customer updated successfully'));
       } else {
         // Create new customer
         const createData = {
-          company_id: userId,
+          company_id: user?.company_id!,
           role_id: 3,
           name: data.name_en,
-          password: '123456',
+          // password: '123456',
           name_en: data.name_en,
           name_ar: data.name_ar,
           phone_number: data.phone_number,
           email: data.email,
           tax_number: data.tax_number,
-          group_id: data.customer_group_id,
-          status: 1,
+          group_id: data.group_id,
+          status: data.status,
         };
         await createTrigger(createData);
         toast.success(t('customers:createSuccess', 'Customer created successfully'));
       }
-
       onSave();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving customer:', error);
-      
+
       // Handle validation errors from API
-      if (error?.response?.data?.errors) {
-        setApiErrors(error.response.data.errors);
-        toast.error(t('common:validationError', 'Please fix the errors below'));
-      } else if (error?.response?.data?.message) {
-        // Handle single error message
-        toast.error(error.response.data.message);
+      if (error && typeof error === 'object' && 'response' in error) {
+        const apiError = error as { response?: { data?: { errors?: Record<string, string[]>; message?: string } } };
+        if (apiError.response?.data?.errors) {
+          setApiErrors(apiError.response.data.errors);
+          toast.error(t('common:validationError', 'Please fix the errors below'));
+        } else if (apiError.response?.data?.message) {
+          // Handle single error message
+          toast.error(apiError.response.data.message);
+        } else {
+          // Generic error message
+          const errorMessage = customer
+            ? t('customers:updateError', 'Failed to update customer')
+            : t('customers:createError', 'Failed to create customer');
+          toast.error(errorMessage);
+        }
       } else {
         // Generic error message
         const errorMessage = customer
@@ -488,10 +474,10 @@ const CustomerModal: React.FC<CustomerModalProps> = ({ customer, onClose, onSave
           : t('customers:createError', 'Failed to create customer');
         toast.error(errorMessage);
       }
-    } finally {
-      setIsSubmitting(false);
     }
   };
+
+  const isPending = isSubmitting || isCreating || isUpdating;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -499,34 +485,42 @@ const CustomerModal: React.FC<CustomerModalProps> = ({ customer, onClose, onSave
         <h2 className="mb-6 text-xl font-semibold text-gray-800 dark:text-white/90">
           {customer ? t('customers:editCustomer', 'Edit Customer') : t('customers:createNew', 'Create Customer')}
         </h2>
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* API Error Summary */}
           {apiErrors && Object.keys(apiErrors).length > 0 && (
             <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
               <div className="flex items-start gap-3">
-                <svg className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                <svg
+                  className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600 dark:text-red-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 <div className="flex-1">
                   <h3 className="text-sm font-medium text-red-800 dark:text-red-300">
                     {t('common:validationError', 'Please fix the following errors:')}
                   </h3>
                   <ul className="mt-2 space-y-1 text-sm text-red-700 dark:text-red-400">
-                    {Object.entries(apiErrors).map(([field, messages]) => (
+                    {Object.entries(apiErrors).map(([field, messages]) =>
                       messages.map((message, idx) => (
                         <li key={`${field}-${idx}`} className="flex items-start gap-2">
                           <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-red-600 dark:bg-red-400"></span>
-                          <span><strong className="font-medium">{field}:</strong> {message}</span>
+                          <span>
+                            <strong className="font-medium">{field}:</strong> {message}
+                          </span>
                         </li>
                       ))
-                    ))}
+                    )}
                   </ul>
                 </div>
               </div>
             </div>
           )}
-
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {/* Name EN */}
             <div>
@@ -540,7 +534,6 @@ const CustomerModal: React.FC<CustomerModalProps> = ({ customer, onClose, onSave
               />
               {errors.name_en && <p className="mt-1 text-xs text-red-500">{errors.name_en.message}</p>}
             </div>
-
             {/* Name AR */}
             <div>
               <label htmlFor="name_ar" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -557,7 +550,10 @@ const CustomerModal: React.FC<CustomerModalProps> = ({ customer, onClose, onSave
 
             {/* Phone Number */}
             <div>
-              <label htmlFor="phone_number" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+              <label
+                htmlFor="phone_number"
+                className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+              >
                 {t('customers:phoneNumber')} <span className="text-red-500">*</span>
               </label>
               <input
@@ -568,7 +564,6 @@ const CustomerModal: React.FC<CustomerModalProps> = ({ customer, onClose, onSave
               />
               {errors.phone_number && <p className="mt-1 text-xs text-red-500">{errors.phone_number.message}</p>}
             </div>
-
             {/* Email */}
             <div>
               <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -582,7 +577,6 @@ const CustomerModal: React.FC<CustomerModalProps> = ({ customer, onClose, onSave
               />
               {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
             </div>
-
             {/* Tax Number */}
             <div>
               <label htmlFor="tax_number" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -594,6 +588,51 @@ const CustomerModal: React.FC<CustomerModalProps> = ({ customer, onClose, onSave
                 className="shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
               />
               {errors.tax_number && <p className="mt-1 text-xs text-red-500">{errors.tax_number.message}</p>}
+            </div>
+
+            {/* Customer Group */}
+            <div>
+              <label htmlFor="group_id" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                {t('customerGroups:selectGroup')} <span className="text-red-500">*</span>
+              </label>
+              <Controller
+                name="group_id"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    options={groupsData || []}
+                    defaultValue={
+                      customer ? String(customer?.groups?.[0]?.[`name_${i18n?.language}` as 'name_en' | 'name_ar']) : ''
+                    }
+                    placeholder={t('customerGroups:selectGroup')}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              {errors.group_id && <p className="mt-1 text-xs text-red-500">{errors.group_id.message}</p>}
+            </div>
+
+            {/* Status */}
+            <div>
+              <label htmlFor="status" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                {t('common:status')} <span className="text-red-500">*</span>
+              </label>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    options={[
+                      { value: '1', label: t('common:active') },
+                      { value: '0', label: t('common:inactive') },
+                    ]}
+                    defaultValue={String(customer?.user?.status)}
+                    placeholder={t('common:status')}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              {errors.status && <p className="mt-1 text-xs text-red-500">{errors.status.message}</p>}
             </div>
           </div>
 
@@ -607,10 +646,10 @@ const CustomerModal: React.FC<CustomerModalProps> = ({ customer, onClose, onSave
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isPending}
               className="bg-brand-500 hover:bg-brand-600 flex w-full justify-center rounded-lg px-4 py-2.5 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
-              {isSubmitting
+              {isPending
                 ? t('common:saving', 'Saving...')
                 : customer
                   ? t('common:update', 'Update')

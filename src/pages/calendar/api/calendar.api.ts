@@ -1,10 +1,10 @@
 /**
  * Calendar API Service
- * 
+ *
  * API calls related to calendar events management
  */
 
-import { get, post, put, del } from '../../../lib/axios';
+import { del, get, post, put } from '../../../lib/axios';
 
 // ============================================================================
 // Calendar API

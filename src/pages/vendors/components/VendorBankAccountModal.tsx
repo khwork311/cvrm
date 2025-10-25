@@ -98,9 +98,11 @@ export const VendorBankAccountModal = ({ vendorId, bankAccountId, onClose }: Ven
                 <input
                   type="text"
                   {...register('bank_name_en')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
-                {errors.bank_name_en && <p className="mt-1 text-sm text-red-500">{t(errors.bank_name_en.message || '')}</p>}
+                {errors.bank_name_en && (
+                  <p className="mt-1 text-sm text-red-500">{t(errors.bank_name_en.message || '')}</p>
+                )}
               </div>
 
               <div>
@@ -110,7 +112,7 @@ export const VendorBankAccountModal = ({ vendorId, bankAccountId, onClose }: Ven
                 <input
                   type="text"
                   {...register('bank_name_ar')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.bank_name_ar && (
                   <p className="mt-1 text-sm text-red-500">{t(errors.bank_name_ar.message || '')}</p>
@@ -124,7 +126,7 @@ export const VendorBankAccountModal = ({ vendorId, bankAccountId, onClose }: Ven
                 <input
                   type="text"
                   {...register('account_holder_name')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.account_holder_name && (
                   <p className="mt-1 text-sm text-red-500">{t(errors.account_holder_name.message || '')}</p>
@@ -138,7 +140,7 @@ export const VendorBankAccountModal = ({ vendorId, bankAccountId, onClose }: Ven
                 <input
                   type="text"
                   {...register('account_number')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 font-mono text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 font-mono text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.account_number && (
                   <p className="mt-1 text-sm text-red-500">{t(errors.account_number.message || '')}</p>
@@ -152,7 +154,7 @@ export const VendorBankAccountModal = ({ vendorId, bankAccountId, onClose }: Ven
                 <input
                   type="text"
                   {...register('iban_number')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 font-mono text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 font-mono text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.iban_number && (
                   <p className="mt-1 text-sm text-red-500">{t(errors.iban_number.message || '')}</p>
@@ -166,7 +168,30 @@ export const VendorBankAccountModal = ({ vendorId, bankAccountId, onClose }: Ven
                 <input
                   type="text"
                   {...register('swift_code')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('vendors:branchEn')}
+                </label>
+                <input
+                  type="text"
+                  {...register('branch_en')}
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('vendors:branchAr')}
+                </label>
+                <input
+                  type="text"
+                  {...register('branch_ar')}
+                  dir="rtl"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
               </div>
 
@@ -179,9 +204,36 @@ export const VendorBankAccountModal = ({ vendorId, bankAccountId, onClose }: Ven
                   {...register('bank_country')}
                   maxLength={2}
                   placeholder="e.g., SA, AE, US"
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
-                {errors.bank_country && <p className="mt-1 text-sm text-red-500">{t(errors.bank_country.message || '')}</p>}
+                {errors.bank_country && (
+                  <p className="mt-1 text-sm text-red-500">{t(errors.bank_country.message || '')}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('vendors:currency')}
+                </label>
+                <input
+                  type="text"
+                  {...register('currency')}
+                  maxLength={3}
+                  placeholder="e.g., SAR, USD, EUR"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
+                />
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="is_default"
+                  {...register('is_default')}
+                  className="h-4 w-4 rounded border-gray-300 text-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                />
+                <label htmlFor="is_default" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                  {t('vendors:setAsDefault')}
+                </label>
               </div>
             </div>
 

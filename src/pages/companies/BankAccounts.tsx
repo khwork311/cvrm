@@ -1,17 +1,20 @@
+import { EmptyState } from '@/components/common/EmptyState';
 import Select from '@/components/form/Select';
 import Badge from '@/components/ui/badge/Badge';
-import { TableActionsDropdown, type TableAction } from '@/components/ui/dropdown/TableActionsDropdown';
+import { ConfirmationModal } from '@/components/ui/modal/ConfirmationModal';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
+import { useToast } from '@/context/ToastContext';
 import { useDebounce } from '@/hooks/useDebounce';
 import { PencilIcon } from '@/icons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import type { BankAccount } from './api/companies.api';
 import {
   useBankAccounts,
+  useCountries,
   useCreateBankAccount,
   useToggleBankAccountStatus,
   useUpdateBankAccount,
@@ -28,11 +31,17 @@ type StatusFilter = 'all' | '1' | '0';
 export const BankAccounts = () => {
   const { t } = useTranslation(['bankAccounts', 'common']);
   const { companyId } = useParams<{ companyId: string }>();
+  const toast = useToast();
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [showModal, setShowModal] = useState(false);
   const [editingAccount, setEditingAccount] = useState<BankAccount | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    accountId: number | null;
+    action: '1' | '0' | null;
+  }>({ isOpen: false, accountId: null, action: null });
   const debouncedSearch = useDebounce(search, 500);
 
   // Fetch bank accounts using SWR
@@ -50,12 +59,26 @@ export const BankAccounts = () => {
     { value: '0', label: t('common:notActive') },
   ];
 
-  const toggleStatus = async (id: number) => {
+  const handleConfirmStatusChange = async () => {
+    if (!confirmModal.accountId) return;
+
     try {
-      await toggleTrigger(id);
+      await toggleTrigger(confirmModal.accountId);
       mutate();
+      toast.success(
+        confirmModal.action === '1'
+          ? t('bankAccounts:activateSuccess', 'Bank account activated successfully')
+          : t('bankAccounts:deactivateSuccess', 'Bank account deactivated successfully')
+      );
     } catch (error) {
       console.error('Error toggling bank account status:', error);
+      toast.error(
+        confirmModal.action === '1'
+          ? t('bankAccounts:activateError', 'Failed to activate bank account')
+          : t('bankAccounts:deactivateError', 'Failed to deactivate bank account')
+      );
+    } finally {
+      setConfirmModal({ isOpen: false, accountId: null, action: null });
     }
   };
 
@@ -128,7 +151,7 @@ export const BankAccounts = () => {
       </div>
 
       {/* Table */}
-      <div className="mt-6 overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+      <div className="mt-6 overflow-x-auto overflow-y-visible rounded-xl border border-gray-200 dark:border-gray-700">
         <Table className="min-w-[1100px]">
           {/* Table Header */}
           <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
@@ -221,29 +244,31 @@ export const BankAccounts = () => {
                 </TableCell>
 
                 <TableCell className="text-theme-sm px-5 py-4 text-center">
-                  <Badge variant="light" color={account.status === 1 ? 'success' : 'error'}>
-                    {account.status === 1 ? t('common:active') : t('common:inactive')}
-                  </Badge>
+                  <button
+                    onClick={() =>
+                      setConfirmModal({
+                        isOpen: true,
+                        accountId: account.id,
+                        action: account.status === 1 ? '0' : '1',
+                      })
+                    }
+                    className="cursor-pointer transition-opacity hover:opacity-80"
+                    title={account.status === 1 ? t('common:deactivate') : t('common:activate')}
+                  >
+                    <Badge variant="light" color={account.status === 1 ? 'success' : 'error'}>
+                      {account.status === 1 ? t('common:active') : t('common:inactive')}
+                    </Badge>
+                  </button>
                 </TableCell>
 
                 <TableCell className="px-5 py-4 text-center">
-                  <TableActionsDropdown
-                    actions={
-                      [
-                        {
-                          label: t('common:edit'),
-                          onClick: () => handleEdit(account),
-                          icon: <PencilIcon className="h-4 w-4" />,
-                          variant: 'primary',
-                        },
-                        {
-                          label: account.status === 1 ? t('common:deactivate') : t('common:activate'),
-                          onClick: () => toggleStatus(account.id),
-                          variant: account.status === 1 ? 'danger' : 'success',
-                        },
-                      ] as TableAction[]
-                    }
-                  />
+                  <button
+                    onClick={() => handleEdit(account)}
+                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-blue-700 hover:shadow-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                    title={t('common:edit')}
+                  >
+                    <PencilIcon className="h-4 w-4" />
+                  </button>
                 </TableCell>
               </TableRow>
             ))}
@@ -252,13 +277,10 @@ export const BankAccounts = () => {
       </div>
 
       {bankAccounts.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-4 py-10">
-          <img src="/images/error/404.svg" alt="404" className="dark:hidden" />
-          <img src="/images/error/404-dark.svg" alt="404" className="hidden dark:block" />
-          <p className="text-center text-2xl font-semibold text-gray-500 dark:text-gray-400">
-            {t('bankAccounts:noAccountsFound', 'No bank accounts found')}
-          </p>
-        </div>
+        <EmptyState
+          title={t('bankAccounts:noAccountsFound', 'No bank accounts found')}
+          description={t('bankAccounts:addFirstAccount', 'Add your first bank account')}
+        />
       )}
 
       {/* Modal for Create/Edit */}
@@ -274,6 +296,26 @@ export const BankAccounts = () => {
           }}
         />
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false, accountId: null, action: null })}
+        onConfirm={handleConfirmStatusChange}
+        title={
+          confirmModal.action === '1'
+            ? t('bankAccounts:activateConfirmTitle', 'Activate Bank Account')
+            : t('bankAccounts:deactivateConfirmTitle', 'Deactivate Bank Account')
+        }
+        message={
+          confirmModal.action === '1'
+            ? t('bankAccounts:activateConfirmMessage', 'Are you sure you want to activate this bank account?')
+            : t('bankAccounts:deactivateConfirmMessage', 'Are you sure you want to deactivate this bank account?')
+        }
+        confirmText={confirmModal.action === '1' ? t('common:activate') : t('common:deactivate')}
+        cancelText={t('common:cancel')}
+        variant={confirmModal.action === '1' ? 'success' : 'danger'}
+      />
     </div>
   );
 };
@@ -287,14 +329,16 @@ interface BankAccountModalProps {
 }
 
 const BankAccountModal: React.FC<BankAccountModalProps> = ({ account, companyId, onClose, onSave }) => {
-  const { t } = useTranslation(['bankAccounts', 'common']);
+  const { t, i18n } = useTranslation(['bankAccounts', 'common']);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { data: countries } = useCountries();
   const { trigger: createTrigger } = useCreateBankAccount(companyId);
   const { trigger: updateTrigger } = useUpdateBankAccount();
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<BankAccountFormData>({
@@ -322,7 +366,7 @@ const BankAccountModal: React.FC<BankAccountModalProps> = ({ account, companyId,
 
       onSave();
     } catch (error) {
-      console.error('Error saving bank account:', error);
+      // console.error('Error saving bank account:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -436,12 +480,29 @@ const BankAccountModal: React.FC<BankAccountModalProps> = ({ account, companyId,
               >
                 Country Code (ISO)
               </label>
-              <input
+              {/* <input
                 {...register('bank_country')}
                 type="text"
                 maxLength={2}
                 className="shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
                 placeholder="SA"
+              /> */}
+              <Controller
+                name="bank_country"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={
+                      countries?.data?.data?.map((country) => ({
+                        value: country?.code!,
+                        label: i18n.language === 'ar' ? country?.name_ar! : country?.name_en!,
+                      })) || []
+                    }
+                    placeholder={t('bankAccounts:countryPlaceholder')}
+                    className="shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+                  />
+                )}
               />
             </div>
           </div>

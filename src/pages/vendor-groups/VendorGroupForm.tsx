@@ -1,14 +1,14 @@
-import React from 'react';
 import PageMeta from '@/components/common/PageMeta';
 import { Input } from '@/components/form/Input';
 import { FormButtons } from '@/components/ui/FormButtons';
+import { useToast } from '@/context/ToastContext';
+import { zodResolver } from '@hookform/resolvers/zod';
+import React from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCreateVendorGroup, useVendorGroup, useUpdateVendorGroup } from './hooks';
+import { useCreateVendorGroup, useUpdateVendorGroup, useVendorGroup } from './hooks';
 import { getVendorGroupSchema, type VendorGroupFormData } from './schemas';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useToast } from '@/context/ToastContext';
 
 export const VendorGroupForm: React.FC = () => {
   const { t } = useTranslation(['vendorGroups', 'common']);
@@ -20,7 +20,7 @@ export const VendorGroupForm: React.FC = () => {
   // Fetch existing group data in edit mode
   const { data: groupResponse, isLoading } = useVendorGroup(groupId ? parseInt(groupId) : null);
   const existingGroup = groupResponse?.data;
-  
+
   const { trigger: createGroup, isMutating: isCreating } = useCreateVendorGroup();
   const { trigger: updateGroup, isMutating: isUpdating } = useUpdateVendorGroup();
 
@@ -62,7 +62,7 @@ export const VendorGroupForm: React.FC = () => {
       navigate('/vendor-groups');
     } catch (error: any) {
       console.error(error);
-      
+
       // Handle API validation errors
       if (error?.response?.data?.errors) {
         const errors = error.response.data.errors;
@@ -106,7 +106,9 @@ export const VendorGroupForm: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Group Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">{t('vendorGroups:groupInformation')}</h3>
+              <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                {t('vendorGroups:groupInformation')}
+              </h3>
 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {/* Name EN */}

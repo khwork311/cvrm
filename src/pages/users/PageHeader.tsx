@@ -1,8 +1,9 @@
 import Select from '@/components/form/Select';
 import Button from '@/components/ui/button/Button';
-import { getRoleOptions, getStatusOptions } from '@/lib/constants';
+import { getStatusOptions } from '@/lib/constants';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { useDropdownRoles } from '../roles/hooks/useRoles';
 
 interface PageHeaderProps {
   search: string;
@@ -22,6 +23,13 @@ export const PageHeader = ({
   setRoleFilter,
 }: PageHeaderProps) => {
   const { t } = useTranslation(['users', 'common']);
+
+  const { data: dropdownRoles } = useDropdownRoles();
+
+  const roleOptions = [
+    { value: '', label: t('common:all') },
+    ...(dropdownRoles?.data.data.map((role) => ({ value: role.id.toString(), label: role.name })) || []),
+  ];
 
   return (
     <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
@@ -58,16 +66,16 @@ export const PageHeader = ({
         </div>
 
         <Select
-          options={getStatusOptions(t)} // to be changed
-          defaultValue={statusFilter}
+          options={getStatusOptions(t)}
+          value={statusFilter}
           placeholder={t('users:filterStatus')}
           onChange={(value) => setStatusFilter(value)}
           className="w-full sm:w-40 dark:bg-gray-800"
         />
 
         <Select
-          options={getRoleOptions(t)}
-          defaultValue={roleFilter}
+          options={roleOptions}
+          value={roleFilter}
           placeholder={t('users:filterRole')}
           onChange={(value) => setRoleFilter(value)}
           className="w-full sm:w-40 dark:bg-gray-800"

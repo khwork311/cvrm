@@ -1,3 +1,4 @@
+import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -22,8 +23,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
         </div>
-        <div className="fixed right-6 bottom-6 z-50 hidden sm:block">
+        <div className="fixed end-6 bottom-6 z-50 hidden gap-4 sm:flex">
           <ThemeTogglerTwo />
+          <LanguageSwitcher />
         </div>
       </div>
     </div>

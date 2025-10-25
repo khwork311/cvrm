@@ -1,6 +1,8 @@
 import PageMeta from '@/components/common/PageMeta';
+import { ValidationErrors } from '@/components/common/ErrorDisplay';
 import Select from '@/components/form/Select';
 import { FormButtons } from '@/components/ui/FormButtons';
+import { useToast } from '@/context/ToastContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -8,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAttachCustomers, useCustomerGroups, useCustomers } from './hooks';
 import { getCustomerAssignmentSchema, type CustomerAssignmentFormData } from './schemas';
-import { useToast } from '@/context/ToastContext';
 
 interface Option {
   value: string;
@@ -70,7 +71,7 @@ export const AssignCustomer: React.FC = () => {
       navigate('/customer-groups');
     } catch (error: any) {
       console.error(error);
-      
+
       // Handle validation errors from API
       if (error?.response?.data?.errors) {
         setApiErrors(error.response.data.errors);
@@ -107,30 +108,7 @@ export const AssignCustomer: React.FC = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* API Error Summary */}
-            {apiErrors && Object.keys(apiErrors).length > 0 && (
-              <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
-                <div className="flex items-start gap-3">
-                  <svg className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="flex-1">
-                    <h3 className="text-sm font-medium text-red-800 dark:text-red-300">
-                      {t('common:validationError', 'Please fix the following errors:')}
-                    </h3>
-                    <ul className="mt-2 space-y-1 text-sm text-red-700 dark:text-red-400">
-                      {Object.entries(apiErrors).map(([field, messages]) => (
-                        messages.map((message, idx) => (
-                          <li key={`${field}-${idx}`} className="flex items-start gap-2">
-                            <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-red-600 dark:bg-red-400"></span>
-                            <span><strong className="font-medium">{field}:</strong> {message}</span>
-                          </li>
-                        ))
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
+            {apiErrors && <ValidationErrors errors={apiErrors} />}
 
             {/* Assignment Information */}
             <div className="space-y-4">

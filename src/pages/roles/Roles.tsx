@@ -33,20 +33,22 @@ export const Roles = () => {
   const filters: RoleFilters = {
     search: debouncedSearch || undefined,
     status: statusFilter ? +statusFilter : undefined,
+    per_page: PAGE_LIMIT,
+    page,
   };
 
   const { data, mutate, error: fetchingError, isLoading: fetchingLoading } = useRoles(filters);
 
   const { trigger: toggleTrigger, isMutating: togglingRole, error: toggleError } = useToggleRoleStatus();
 
-  // PAGINATION
-  const roles = data?.data || [];
-  const total = roles.length;
-  const totalPages = Math.ceil(total / PAGE_LIMIT);
-
-  const startIndex = (page - 1) * PAGE_LIMIT;
-  const endIndex = startIndex + PAGE_LIMIT;
-  const paginatedRoles = roles.slice(startIndex, endIndex);
+  // SERVER-SIDE PAGINATION DATA
+  const roles = data?.data.data || [];
+  const paginationData = data?.data;
+  const total = paginationData?.total || 0;
+  const currentPage = paginationData?.current_page || 1;
+  const totalPages = paginationData?.last_page || 1;
+  const from = paginationData?.from || 0;
+  const to = paginationData?.to || 0;
 
   const openConfirmModal = (role: Role) => {
     setSelectedRole(role);
@@ -59,11 +61,13 @@ export const Roles = () => {
   };
 
   const handleToggleStatus = async () => {
+    if (!selectedRole) return;
+
     try {
-      await toggleTrigger(selectedRole?.id!);
+      await toggleTrigger({ id: selectedRole.id, status: selectedRole.status ? 0 : 1 });
       mutate();
     } catch (err) {
-      error(toggleError?.message || 'Error toggling role status, please try again later');
+      error(toggleError?.response.data.message || 'Error toggling role status, please try again later');
     } finally {
       closeModal();
     }
@@ -74,11 +78,16 @@ export const Roles = () => {
 
   if (fetchingError) {
     return (
-      <Alert variant="error" title={t('roles:errorFetchingRoles')} message={fetchingError.message} showLink={false} />
+      <Alert
+        variant="error"
+        title={t('roles:errorFetchingRoles')}
+        message={fetchingError.response.data.message}
+        showLink={false}
+      />
     );
   }
 
-  if (paginatedRoles.length === 0) {
+  if (roles.length === 0) {
     return (
       <div>
         {/* Header + Filters */}
@@ -161,7 +170,7 @@ export const Roles = () => {
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 text-center dark:divide-gray-700">
-            {paginatedRoles.map((role) => (
+            {roles.map((role) => (
               <TableRow
                 key={role.id}
                 className="transition-colors duration-150 hover:bg-gray-50/50 dark:hover:bg-gray-700/30"
@@ -223,7 +232,7 @@ export const Roles = () => {
 
       {/* Cards for small screens */}
       <div className={`mt-6 grid grid-cols-1 gap-4 md:hidden ${isExpanded ? 'lg:grid xl:hidden' : ''}`}>
-        {paginatedRoles.map((role) => (
+        {roles.map((role) => (
           <div
             key={role.id}
             className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
@@ -291,13 +300,12 @@ export const Roles = () => {
       {totalPages > 1 && (
         <div className="mt-8 flex items-center justify-between">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            {t('common:showing')} {(page - 1) * PAGE_LIMIT + 1}-{Math.min(page * PAGE_LIMIT, total)} {t('common:of')}{' '}
-            {total}
+            {t('common:showing')} {from}-{to} {t('common:of')} {total}
           </p>
           <div className="flex gap-2">
             <Button
               variant="outline"
-              disabled={page === 1}
+              disabled={currentPage === 1}
               onClick={() => setPage((p) => p - 1)}
               className="flex items-center gap-2"
             >
@@ -313,7 +321,7 @@ export const Roles = () => {
             </Button>
             <Button
               variant="outline"
-              disabled={page === totalPages}
+              disabled={currentPage === totalPages}
               onClick={() => setPage((p) => p + 1)}
               className="flex items-center gap-2"
             >

@@ -1,14 +1,15 @@
 import { useToast } from '@/context/ToastContext';
 import { useAuth } from '@/hooks/useAuth';
-import { useActionState, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '../../icons';
+import { EyeCloseIcon, EyeIcon } from '../../icons';
 import { Input } from '../form';
 import Label from '../form/Label';
-import Checkbox from '../form/input/Checkbox';
 import Button from '../ui/button/Button';
-import { loginSchema } from './schemas';
+import { LoginFormData, loginSchema } from './schemas';
 
 export default function SignInForm() {
   const { t } = useTranslation(['auth', 'validation']);
@@ -16,51 +17,44 @@ export default function SignInForm() {
   const { success, error: showError } = useToast();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const formAction = async (_prevState: any, formData: FormData) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      rememberMe: false,
+    },
+  });
+
+  const handleLogin = async (formData: LoginFormData) => {
+    setIsSubmitting(true);
     try {
-      const data = {
-        email: formData.get('email') as string,
-        password: formData.get('password') as string,
-        rememberMe: formData.get('rememberMe') === 'on',
-      };
-
-      // Validate with schema
-      const validatedData = loginSchema.parse(data);
-
       // Integration with auth API
       await login({
-        email: validatedData.email,
-        password: validatedData.password,
+        email: formData.email,
+        password: formData.password,
       });
 
       // Show success message
       success(t('auth:loginSuccess'));
-      return { success: true, errors: null };
     } catch (err: any) {
       console.error('Login error:', err);
-
-      // Extract error message from API response
+      // Extract error message from API response for toast
       const errorMessage = err.response?.data?.message || err.message || t('auth:loginError');
       showError(errorMessage);
-      return { success: false, errors: err.errors || err.message };
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const [_state, formActionDispatch, isPending] = useActionState(formAction, { success: false, errors: null });
-
   return (
     <div className="flex flex-1 flex-col">
-      <div className="mx-auto w-full max-w-md pt-10">
-        <Link
-          to="/"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          <ChevronLeftIcon className="size-5" />
-          {t('auth:backToDashboard')}
-        </Link>
-      </div>
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
         <div>
           <div className="mb-5 sm:mb-8">
@@ -70,7 +64,7 @@ export default function SignInForm() {
             <p className="text-sm text-gray-500 dark:text-gray-400">{t('auth:signInDescription')}</p>
           </div>
           <div>
-            <form action={formActionDispatch}>
+            <form onSubmit={handleSubmit(handleLogin)}>
               <div className="space-y-6">
                 {/* Email Field */}
                 <div>
@@ -78,10 +72,11 @@ export default function SignInForm() {
                     {t('auth:email')} <span className="text-error-500">*</span>
                   </Label>
                   <Input
+                    {...register('email')}
                     name="email"
                     id="email"
-                    type="email"
                     placeholder={t('auth:emailPlaceholder')}
+                    error={errors?.email}
                   />
                 </div>
 
@@ -92,10 +87,12 @@ export default function SignInForm() {
                   </Label>
                   <div className="relative">
                     <Input
+                      {...register('password')}
                       name="password"
                       id="password"
                       type={showPassword ? 'text' : 'password'}
                       placeholder={t('auth:passwordPlaceholder')}
+                      error={errors?.password}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -110,17 +107,8 @@ export default function SignInForm() {
                   </div>
                 </div>
 
-                {/* Remember Me & Forgot Password */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Checkbox checked={rememberMe} onChange={setRememberMe} id="rememberMe" name="rememberMe" />
-                    <label
-                      htmlFor="rememberMe"
-                      className="text-theme-sm block cursor-pointer font-normal text-gray-700 dark:text-gray-400"
-                    >
-                      {t('auth:rememberMe')}
-                    </label>
-                  </div>
+                {/* Forgot Password */}
+                <div className="flex justify-end">
                   <Link
                     to="/forgot-password"
                     className="text-brand-500 hover:text-brand-600 dark:text-brand-400 text-sm"
@@ -131,8 +119,8 @@ export default function SignInForm() {
 
                 {/* Submit Button */}
                 <div>
-                  <Button className="w-full" size="sm" disabled={isPending}>
-                    {isPending ? t('auth:signingIn') : t('auth:signIn')}
+                  <Button className="w-full" size="sm" disabled={isSubmitting}>
+                    {isSubmitting ? t('auth:signingIn') : t('auth:signIn')}
                   </Button>
                 </div>
               </div>

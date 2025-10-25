@@ -1,6 +1,6 @@
 /**
  * Shared API Types
- * 
+ *
  * Common interfaces used across multiple API services
  */
 

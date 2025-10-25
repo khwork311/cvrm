@@ -1,13 +1,10 @@
-import { AppAbility, Action, Subject } from './ability';
+import { Action, AppAbility, Subject } from './ability';
 
 /**
  * Check multiple permissions at once
  * Returns true only if ALL permissions are granted
  */
-export function canAll(
-  ability: AppAbility,
-  permissions: Array<{ action: Action; subject: Subject }>
-): boolean {
+export function canAll(ability: AppAbility, permissions: Array<{ action: Action; subject: Subject }>): boolean {
   return permissions.every(({ action, subject }) => ability.can(action, subject));
 }
 
@@ -15,10 +12,7 @@ export function canAll(
  * Check multiple permissions at once
  * Returns true if ANY permission is granted
  */
-export function canAny(
-  ability: AppAbility,
-  permissions: Array<{ action: Action; subject: Subject }>
-): boolean {
+export function canAny(ability: AppAbility, permissions: Array<{ action: Action; subject: Subject }>): boolean {
   return permissions.some(({ action, subject }) => ability.can(action, subject));
 }
 

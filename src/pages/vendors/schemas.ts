@@ -7,9 +7,11 @@ export const vendorSchema = z.object({
   name_en: z.string().min(1, 'validation:required'),
   name_ar: z.string().optional(),
   phone_number: z.string().min(1, 'validation:required'),
-  email: z.string().email('validation:invalidEmail').min(1, 'validation:required'),
+  email: z.email('validation:invalidEmail').min(1, 'validation:required'),
   tax_number: z.string().optional(),
-  status: z.enum(['active', 'inactive']),
+  status: z.number(), // 0 = inactive, 1 = active
+  role_id: z.number().min(1, 'validation:required'),
+  group_ids: z.array(z.number()).optional(),
 });
 
 export type VendorFormData = z.infer<typeof vendorSchema>;

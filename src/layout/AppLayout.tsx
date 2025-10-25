@@ -15,8 +15,8 @@ const LayoutContent: React.FC = () => {
       </div>
       <div
         className={`flex-1 transition-all duration-300 ease-in-out ${
-          isExpanded || isHovered ? 'lg:ml-[290px]' : 'lg:ml-[90px]'
-        } ${isMobileOpen ? 'ml-0' : ''}`}
+          isExpanded || isHovered ? 'lg:ms-[290px]' : 'lg:ms-[90px]'
+        } ${isMobileOpen ? 'ms-0' : ''}`}
       >
         <AppHeader />
         <div className="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6">

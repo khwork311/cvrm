@@ -21,6 +21,16 @@ export function useRoles(filters?: RoleFilters) {
 }
 
 /**
+ * Hook to fetch all dropdown roles
+ */
+export function useDropdownRoles() {
+  return useSWR('roles-dropdown', rolesApi.getAllDropDown, {
+    revalidateOnFocus: false,
+    keepPreviousData: true,
+  });
+}
+
+/**
  * Hook to fetch a single role by ID
  */
 export function useRole(id: number | null) {
@@ -84,7 +94,7 @@ export function useAllPermissions() {
  * Hook to toggle role status
  */
 export function useToggleRoleStatus() {
-  return useSWRMutation('roles', async (_key, { arg }: { arg: number }) => {
+  return useSWRMutation('roles', async (_, { arg }: { arg: { id: number; status: number } }) => {
     return rolesApi.toggleStatus(arg);
   });
 }

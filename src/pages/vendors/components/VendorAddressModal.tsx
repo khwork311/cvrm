@@ -1,9 +1,9 @@
 import { Modal } from '@/components/ui/modal';
+import { useCities, useCountries } from '@/pages/companies/hooks/useAddresses';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useCountries, useCities } from '@/pages/companies/hooks/useAddresses';
 import { useCreateVendorAddress, useUpdateVendorAddress, useVendorAddress } from '../hooks';
 import { vendorAddressSchema, type VendorAddressFormData } from '../schemas';
 
@@ -97,13 +97,15 @@ export const VendorAddressModal = ({ vendorId, addressId, onClose }: VendorAddre
                 </label>
                 <select
                   {...register('address_type')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 >
                   <option value="billing">{t('vendors:addressType_billing')}</option>
                   <option value="shipping">{t('vendors:addressType_shipping')}</option>
                   <option value="other">{t('vendors:addressType_other')}</option>
                 </select>
-                {errors.address_type && <p className="mt-1 text-sm text-red-500">{t(errors.address_type.message || '')}</p>}
+                {errors.address_type && (
+                  <p className="mt-1 text-sm text-red-500">{t(errors.address_type.message || '')}</p>
+                )}
               </div>
 
               <div>
@@ -112,7 +114,7 @@ export const VendorAddressModal = ({ vendorId, addressId, onClose }: VendorAddre
                 </label>
                 <select
                   {...register('country_id', { valueAsNumber: true })}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 >
                   <option value="">{t('vendors:selectCountry')}</option>
                   {countries?.map((country) => (
@@ -131,7 +133,7 @@ export const VendorAddressModal = ({ vendorId, addressId, onClose }: VendorAddre
                 <select
                   {...register('city_id', { valueAsNumber: true })}
                   disabled={!selectedCountryId}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:opacity-50 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none disabled:opacity-50 dark:border-gray-600 dark:text-white/90"
                 >
                   <option value="">{t('vendors:selectCity')}</option>
                   {cities?.map((city) => (
@@ -150,9 +152,11 @@ export const VendorAddressModal = ({ vendorId, addressId, onClose }: VendorAddre
                 <input
                   type="text"
                   {...register('address_name')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
-                {errors.address_name && <p className="mt-1 text-sm text-red-500">{t(errors.address_name.message || '')}</p>}
+                {errors.address_name && (
+                  <p className="mt-1 text-sm text-red-500">{t(errors.address_name.message || '')}</p>
+                )}
               </div>
 
               <div>
@@ -162,9 +166,11 @@ export const VendorAddressModal = ({ vendorId, addressId, onClose }: VendorAddre
                 <input
                   type="text"
                   {...register('street_name')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
-                {errors.street_name && <p className="mt-1 text-sm text-red-500">{t(errors.street_name.message || '')}</p>}
+                {errors.street_name && (
+                  <p className="mt-1 text-sm text-red-500">{t(errors.street_name.message || '')}</p>
+                )}
               </div>
 
               <div>
@@ -174,7 +180,7 @@ export const VendorAddressModal = ({ vendorId, addressId, onClose }: VendorAddre
                 <input
                   type="text"
                   {...register('building_number')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
               </div>
 
@@ -185,10 +191,9 @@ export const VendorAddressModal = ({ vendorId, addressId, onClose }: VendorAddre
                 <input
                   type="text"
                   {...register('postal_code')}
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
               </div>
-
 
               <div className="flex items-center">
                 <input

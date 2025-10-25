@@ -10,28 +10,28 @@
   "viewDetails": "View Details",
   "formDescription": "Create or edit vendor information",
   "detailDescription": "View vendor details and manage information",
-  
+
   "allVendors": "All Vendors",
   "linkedToUser": "Linked to User",
   "notLinkedToUser": "Not Linked",
-  
+
   "nameColumn": "Name",
   "emailColumn": "Email",
   "phoneColumn": "Phone",
   "taxNumberColumn": "Tax Number",
   "invitationStatus": "Invitation Status",
-  
+
   "nameEn": "Name (English)",
   "nameAr": "Name (Arabic)",
   "email": "Email",
   "phoneNumber": "Phone Number",
   "taxNumber": "Tax Number",
-  
+
   "accepted": "Accepted",
   "pending": "Pending",
   "expired": "Expired",
   "notInvited": "Not Invited",
-  
+
   "sendInvitation": "Send Invitation",
   "resendInvitation": "Resend Invitation",
   "copyInviteLink": "Copy Invite Link",
@@ -50,7 +50,7 @@
   "invitationInfoItem1": "An email with a secure link will be sent to the vendor",
   "invitationInfoItem2": "The link will expire in 7 days",
   "invitationInfoItem3": "The vendor can create their account and complete their profile",
-  
+
   "acceptInvitation": "Accept Invitation",
   "acceptInvitationDescription": "Create your account to access the vendor portal",
   "welcomeVendor": "Welcome!",
@@ -64,7 +64,7 @@
   "creatingAccount": "Creating Account...",
   "invalidInvitation": "Invalid Invitation",
   "invalidInvitationDescription": "This invitation link is invalid or has expired. Please contact the company for a new invitation.",
-  
+
   "completeProfile": "Complete Your Profile",
   "completeProfileDescription": "Add your addresses and bank account information",
   "step1Title": "Step 1: Add Your Address",
@@ -79,42 +79,57 @@
   "skipForNow": "Skip for Now",
   "next": "Next",
   "goToDashboard": "Go to Dashboard",
-  
+
   "overview": "Overview",
   "addresses": "Addresses",
   "bankAccounts": "Bank Accounts",
   "userAccess": "User & Access",
-  
+
   "basicInfo": "Basic Information",
   "invitationInfo": "Invitation Information",
   "invitedAt": "Invited At",
   "expiresAt": "Expires At",
-  
+
   "addAddress": "Add Address",
   "editAddress": "Edit Address",
   "addressType": "Address Type",
   "addressType_billing": "Billing",
   "addressType_shipping": "Shipping",
   "addressType_other": "Other",
+  "allTypes": "All Types",
   "street": "Street",
+  "streetName": "Street Name",
   "city": "City",
   "country": "Country",
   "postalCode": "Postal Code",
+  "buildingNumber": "Building Number",
+  "addressName": "Address Name",
   "phone": "Phone",
   "isDefault": "Default",
   "setAsDefault": "Set as Default",
   "selectCountry": "Select Country",
   "selectCity": "Select City",
-  
+  "noAddressesDescription": "Add addresses to manage vendor locations",
+
   "addBankAccount": "Add Bank Account",
   "editBankAccount": "Edit Bank Account",
   "bankName": "Bank Name",
+  "bankNameEn": "Bank Name (English)",
+  "bankNameAr": "Bank Name (Arabic)",
   "accountHolder": "Account Holder",
+  "accountHolderName": "Account Holder Name",
   "accountNumber": "Account Number",
+  "ibanNumber": "IBAN Number",
   "ibanOrAccount": "IBAN / Account Number",
+  "swiftCode": "SWIFT Code",
   "swift": "SWIFT Code",
+  "branch": "Branch",
+  "branchEn": "Branch (English)",
+  "branchAr": "Branch (Arabic)",
+  "bankCountry": "Bank Country",
   "currency": "Currency",
-  
+  "noBankAccountsDescription": "Add bank accounts to manage vendor payments",
+
   "linkedUser": "Linked User",
   "noUserLinked": "No User Linked",
   "noUserLinkedDescription": "This vendor has not yet accepted the invitation or created an account.",
@@ -123,14 +138,23 @@
   "userId": "User ID",
   "userAccessDescription": "The vendor has access to the portal and can manage their profile.",
   "invitationPending": "Invitation Pending",
-  
+
   "noVendorsFound": "No vendors found",
   "noAddressesFound": "No addresses found",
   "noBankAccountsFound": "No bank accounts found",
   "vendorNotFound": "Vendor not found",
   "errorLoadingVendors": "Failed to load vendors. Please try again.",
-  
+
   "requiredFields": "Required fields",
   "accountCreatedSuccessfully": "Account created successfully!",
-  "failedToCreateAccount": "Failed to create account. Please try again."
+  "failedToCreateAccount": "Failed to create account. Please try again.",
+  "noVendorsMatchFilters": "No vendors match your current filters",
+  "noVendorsCreated": "No vendors have been created yet",
+  "createFirstVendor": "Create First Vendor",
+  "resetFilters": "Reset Filters",
+  "statusUpdated": "Status updated successfully",
+  "statusUpdateError": "Failed to update status",
+  "confirmToggle": "Confirm Status Change",
+  "deactivateConfirm": "Are you sure you want to deactivate the vendor \"{{vendor}}\"?",
+  "activateConfirm": "Are you sure you want to activate the vendor \"{{vendor}}\"?"
 }

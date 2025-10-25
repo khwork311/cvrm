@@ -19,28 +19,13 @@ interface TableActionsDropdownProps {
 
 export const TableActionsDropdown: React.FC<TableActionsDropdownProps> = ({ actions }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [dropUp, setDropUp] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
-
-  useEffect(() => {
-    if (isOpen && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setDropdownPosition({
-        top: rect.bottom + window.scrollY + 4,
-        left: rect.right + window.scrollX - 160, // 160px is min-width of dropdown
-      });
-    }
-  }, [isOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -51,10 +36,21 @@ export const TableActionsDropdown: React.FC<TableActionsDropdownProps> = ({ acti
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (isOpen && containerRef.current && dropdownRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const dropdownHeight = dropdownRef.current.offsetHeight;
+      const spaceBelow = window.innerHeight - containerRect.bottom;
+      const spaceAbove = containerRect.top;
+
+      // If not enough space below but enough space above, flip upward
+      setDropUp(spaceBelow < dropdownHeight && spaceAbove > dropdownHeight);
+    }
+  }, [isOpen]);
+
   return (
-    <>
+    <div ref={containerRef} className="relative inline-block">
       <button
-        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="dropdown-toggle flex h-8 w-8 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
         aria-label="Actions"
@@ -65,11 +61,10 @@ export const TableActionsDropdown: React.FC<TableActionsDropdownProps> = ({ acti
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="shadow-theme-lg fixed z-50 min-w-[160px] rounded-xl border border-gray-200 bg-white py-1 dark:border-gray-800 dark:bg-gray-900"
-          style={{
-            top: `${dropdownPosition.top}px`,
-            left: `${dropdownPosition.left}px`,
-          }}
+          className={clsx(
+            'shadow-theme-lg absolute right-0 z-50 min-w-[160px] rounded-xl border border-gray-200 bg-white py-1 dark:border-gray-800 dark:bg-gray-900',
+            dropUp ? 'bottom-full mb-1' : 'top-full mt-1'
+          )}
         >
           {actions.map((action, index) => (
             <DropdownItem
@@ -98,6 +93,6 @@ export const TableActionsDropdown: React.FC<TableActionsDropdownProps> = ({ acti
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 };

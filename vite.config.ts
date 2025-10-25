@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -14,7 +15,6 @@ export default defineConfig({
       },
     }),
   ],
-  base: '/',
   resolve: {
     alias: {
       '@': '/src',
@@ -39,56 +39,51 @@ export default defineConfig({
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
               return 'react-vendor';
             }
-
+            
             // Charts
             if (id.includes('apexcharts') || id.includes('react-apexcharts')) {
               return 'charts';
             }
-
+            
             // Calendar
             if (id.includes('@fullcalendar')) {
               return 'calendar';
             }
-
+            
             // Maps
             if (id.includes('@react-jvectormap')) {
               return 'maps';
             }
-
+            
             // Forms and validation
             if (id.includes('react-hook-form') || id.includes('@hookform') || id.includes('zod')) {
               return 'forms';
             }
-
+            
             // i18n
             if (id.includes('i18next') || id.includes('react-i18next')) {
               return 'i18n';
             }
-
+            
             // CASL permissions
             if (id.includes('@casl')) {
               return 'casl';
             }
-
+            
             // UI utilities
-            if (
-              id.includes('flatpickr') ||
-              id.includes('swiper') ||
-              id.includes('react-dropzone') ||
-              id.includes('react-dnd')
-            ) {
+            if (id.includes('flatpickr') || id.includes('swiper') || id.includes('react-dropzone') || id.includes('react-dnd')) {
               return 'ui-utils';
             }
-
+            
             // Data fetching
             if (id.includes('axios') || id.includes('swr')) {
               return 'data-fetching';
             }
-
+            
             // Other vendor code
             return 'vendor';
           }
-
+          
           // Application code splitting by feature
           if (id.includes('/src/pages/vendors/')) {
             return 'vendors';
@@ -157,7 +152,7 @@ export default defineConfig({
   },
   // Server configuration
   server: {
-    port: process.env.PORT ? parseInt(process.env.PORT, 10) : 5173,
+    port: 3000,
     strictPort: false,
     host: true,
     open: false,

@@ -18,7 +18,21 @@ i18n
   .init({
     fallbackLng: 'en',
     defaultNS: 'common',
-    ns: ['common', 'auth', 'navigation', 'plans', 'validation', 'companies', 'customers', 'customerGroups', 'roles', 'users', 'vendors', 'vendorGroups'],
+    ns: [
+      'common',
+      'auth',
+      'navigation',
+      'plans',
+      'validation',
+      'companies',
+      'customers',
+      'customerGroups',
+      'roles',
+      'users',
+      'vendors',
+      'vendorGroups',
+      'bankAccounts',
+    ],
     supportedLngs: ['en', 'ar'],
 
     detection: {

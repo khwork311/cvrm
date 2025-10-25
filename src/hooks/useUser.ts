@@ -8,10 +8,7 @@ import { useAuth } from './useAuth';
 export const useUser = (config?: SWRConfiguration) => {
   const { isAuthenticated } = useAuth();
 
-  const { data, error, isLoading, mutate, isValidating } = useSWR<User>(
-    isAuthenticated ? '/auth/me' : null,
-    config,
-  );
+  const { data, error, isLoading, mutate, isValidating } = useSWR<User>(isAuthenticated ? '/auth/me' : null, config);
 
   return {
     user: data,

@@ -17,7 +17,7 @@ export interface Option {
 }
 
 export const CreateCompany: React.FC = () => {
-  const { t } = useTranslation(['companies', 'common']);
+  const { t, i18n } = useTranslation(['companies', 'common']);
   const { companyId } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
@@ -218,7 +218,7 @@ export const CreateCompany: React.FC = () => {
                   <Controller
                     name="plan_id"
                     control={control}
-                    defaultValue={String(company?.data?.plan_id)}
+                    defaultValue={String(company?.data?.plan?.[`title_${i18n?.language}` as 'title_en' | 'title_ar'])}
                     render={({ field }) => (
                       <>
                         <Select

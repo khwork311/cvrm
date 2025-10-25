@@ -20,6 +20,7 @@ export interface User {
   permissions: Permission[];
   created_at: string;
   updated_at: string;
+  company_id?: number;
 }
 
 // Auth tokens
@@ -82,6 +83,7 @@ export interface ForgotPasswordRequest {
 export interface ResetPasswordRequest {
   email: string;
   token: string;
+  company_id: string;
   password: string;
   password_confirmation: string;
 }

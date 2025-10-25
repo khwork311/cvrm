@@ -79,7 +79,12 @@ export const Plans = () => {
 
   if (fetchingError) {
     return (
-      <Alert variant="error" title={t('plans:errorFetchingPlans')} message={fetchingError.message} showLink={false} />
+      <Alert
+        variant="error"
+        title={t('plans:errorFetchingPlans')}
+        message={fetchingError.response.data.message}
+        showLink={false}
+      />
     );
   }
 

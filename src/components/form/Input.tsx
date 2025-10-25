@@ -20,15 +20,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label
-            htmlFor={id}
-            className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
-          >
+          <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
             {label}
             {required && <span className="text-red-500"> *</span>}
           </label>
         )}
-        
+
         <input
           ref={ref}
           id={id}
@@ -40,13 +37,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           aria-describedby={errorMessage ? `${id}-error` : helperText ? `${id}-helper` : undefined}
           {...props}
         />
-        
+
         {errorMessage && (
           <p id={`${id}-error`} className="mt-1 text-xs text-red-500" role="alert">
             {errorMessage}
           </p>
         )}
-        
+
         {helperText && !errorMessage && (
           <p id={`${id}-helper`} className="mt-1 text-xs text-gray-500 dark:text-gray-400">
             {helperText}

@@ -1,31 +1,41 @@
-import React from 'react';
 import PageMeta from '@/components/common/PageMeta';
+import Select from '@/components/form/Select';
+import { useToast } from '@/context/ToastContext';
+import { zodResolver } from '@hookform/resolvers/zod';
+import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useVendorGroups } from '../vendor-groups/hooks/useVendorGroups';
 import { useCreateVendor, useUpdateVendor, useVendor } from './hooks';
 import { vendorSchema, type VendorFormData } from './schemas';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useToast } from '@/context/ToastContext';
 
 export const VendorForm = () => {
-  const { t, ready } = useTranslation(['vendors', 'common', 'validation']);
+  const { t, i18n, ready } = useTranslation(['vendors', 'common', 'validation']);
   const navigate = useNavigate();
   const { vendorId } = useParams<{ vendorId: string }>();
   const isEditMode = !!vendorId;
 
   const toast = useToast();
   const { data: apiVendorResponse, isLoading: isLoadingVendor } = useVendor(vendorId ? parseInt(vendorId) : null);
-  
+  const { data: vendorGroupsData } = useVendorGroups();
+
+  const vendorGroups = vendorGroupsData?.data?.data || [];
+  const groupOptions = vendorGroups.map((group) => ({
+    value: String(group.id),
+    label: i18n.language === 'ar' ? group.name_ar : group.name_en,
+  }));
+
   // Extract vendor data from API response
   const vendorData = apiVendorResponse?.data;
-  
+
   const { trigger: createVendor, isMutating: isCreating } = useCreateVendor();
   const { trigger: updateVendor, isMutating: isUpdating } = useUpdateVendor();
 
   // React Hook Form setup
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
@@ -37,7 +47,9 @@ export const VendorForm = () => {
       phone_number: vendorData?.phone_number || '',
       email: vendorData?.email || '',
       tax_number: vendorData?.tax_number || '',
-      status: vendorData?.status === 1 ? 'active' : 'inactive',
+      status: vendorData?.status ?? 1,
+      role_id: 4, // Vendor role ID
+      group_ids: vendorData?.groups?.map((g: any) => g.id) || [],
     },
   });
 
@@ -50,17 +62,20 @@ export const VendorForm = () => {
         phone_number: vendorData.phone_number,
         email: vendorData.email,
         tax_number: vendorData.tax_number || '',
-        status: vendorData.status === 1 ? 'active' : 'inactive',
+        status: vendorData.status ?? 1,
+        role_id: 4,
+        group_ids: vendorData.groups?.map((g: any) => g.id) || [],
       });
     }
   }, [vendorData, reset]);
 
   const onSubmit = async (data: VendorFormData) => {
     try {
-      // Convert status to number for API
       const apiData = {
         ...data,
-        status: data.status === 'active' ? 1 : 0,
+        status: Number(data.status), // Ensure numeric status for API
+        role_id: data.role_id || 4,
+        group_ids: data.group_ids || [],
       };
 
       if (isEditMode && vendorId) {
@@ -73,7 +88,7 @@ export const VendorForm = () => {
       navigate('/vendors');
     } catch (error: any) {
       console.error('Failed to save vendor:', error);
-      
+
       // Handle API validation errors
       if (error?.response?.data?.errors) {
         const errors = error.response.data.errors;
@@ -82,7 +97,7 @@ export const VendorForm = () => {
       } else if (error?.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        const errorMessage = isEditMode 
+        const errorMessage = isEditMode
           ? t('vendors:updateError', 'Failed to update vendor')
           : t('vendors:createError', 'Failed to create vendor');
         toast.error(errorMessage);
@@ -99,7 +114,6 @@ export const VendorForm = () => {
       navigate('/vendors');
     }
   };
-
 
   if (!ready || (isEditMode && isLoadingVendor)) {
     return (
@@ -135,7 +149,7 @@ export const VendorForm = () => {
                   {...register('name_en')}
                   id="name_en"
                   type="text"
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                   required
                 />
                 {errors.name_en && <p className="mt-1 text-sm text-red-500">{errors.name_en.message}</p>}
@@ -151,7 +165,7 @@ export const VendorForm = () => {
                   id="name_ar"
                   type="text"
                   dir="rtl"
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.name_ar && <p className="mt-1 text-sm text-red-500">{errors.name_ar.message}</p>}
               </div>
@@ -165,7 +179,7 @@ export const VendorForm = () => {
                   {...register('email')}
                   id="email"
                   type="email"
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                   required
                 />
                 {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>}
@@ -173,14 +187,17 @@ export const VendorForm = () => {
 
               {/* Phone Number */}
               <div>
-                <label htmlFor="phone_number" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label
+                  htmlFor="phone_number"
+                  className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   {t('vendors:phoneNumber')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   {...register('phone_number')}
                   id="phone_number"
                   type="tel"
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                   required
                 />
                 {errors.phone_number && <p className="mt-1 text-sm text-red-500">{errors.phone_number.message}</p>}
@@ -195,7 +212,7 @@ export const VendorForm = () => {
                   {...register('tax_number')}
                   id="tax_number"
                   type="text"
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 />
                 {errors.tax_number && <p className="mt-1 text-sm text-red-500">{errors.tax_number.message}</p>}
               </div>
@@ -206,14 +223,38 @@ export const VendorForm = () => {
                   {t('common:status')}
                 </label>
                 <select
-                  {...register('status')}
+                  {...register('status', { valueAsNumber: true })}
                   id="status"
-                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:text-white/90"
+                  className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:text-white/90"
                 >
-                  <option value="active">{t('common:active')}</option>
-                  <option value="inactive">{t('common:inactive')}</option>
+                  <option value="1">{t('common:active')}</option>
+                  <option value="0">{t('common:inactive')}</option>
                 </select>
                 {errors.status && <p className="mt-1 text-sm text-red-500">{errors.status.message}</p>}
+              </div>
+
+              {/* Vendor Groups */}
+              <div className="mt-6">
+                <label htmlFor="group_ids" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('vendors:vendorGroups', 'Vendor Groups')}
+                </label>
+                <Controller
+                  name="group_ids"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={groupOptions}
+                      placeholder={t('vendors:selectGroups', 'Select vendor groups')}
+                      onChange={(value) => {
+                        // Handle multiple selection by converting comma-separated string to array
+                        const ids = value ? value.split(',').map(Number) : [];
+                        field.onChange(ids);
+                      }}
+                      value={field.value?.map(String).join(',') || ''}
+                    />
+                  )}
+                />
+                {errors.group_ids && <p className="mt-1 text-sm text-red-500">{errors.group_ids.message}</p>}
               </div>
             </div>
 

@@ -54,7 +54,7 @@ export function useUpdateCustomerGroup() {
  * Hook to toggle customer group status
  */
 export function useToggleCustomerGroupStatus() {
-  return useSWRMutation('customerGroups', async (_key, { arg }: { arg: number }) => {
-    return customerGroupsApi.toggleStatus(arg);
+  return useSWRMutation('customerGroups', async (_key, { arg }: { arg: { id: number; status: number } }) => {
+    return customerGroupsApi.toggleStatus(arg.id, arg.status);
   });
 }

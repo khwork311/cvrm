@@ -61,12 +61,42 @@ export interface ApiResponse<T> {
   message: string;
 }
 
+export interface DropdownRole {
+  id: number;
+  name: string;
+}
+
+export interface PaginatedResponse<T> {
+  success: boolean;
+  data: {
+    current_page: number;
+    data: T;
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: Array<{
+      url: string | null;
+      label: string;
+      page: number | null;
+      active: boolean;
+    }>;
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+    total: number;
+  };
+  message: string;
+}
+
 export const rolesApi = {
   /**
    * Get all roles
    * GET /api/roles
    */
-  getAll: (filters?: RoleFilters): Promise<ApiResponse<Role[]>> => {
+  getAll: (filters?: RoleFilters): Promise<PaginatedResponse<Role[]>> => {
     const params = new URLSearchParams();
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
@@ -74,6 +104,13 @@ export const rolesApi = {
       });
     }
     return get(`/roles?${params.toString()}`);
+  },
+  /**
+   * Get all dropdown roles
+   * GET /api/roles/dropdown
+   */
+  getAllDropDown: (): Promise<PaginatedResponse<DropdownRole[]>> => {
+    return get(`/roles/dropdown`);
   },
 
   /**
@@ -136,8 +173,8 @@ export const rolesApi = {
    * Toggle role status
    * PATCH /api/roles/{id}/toggle-status
    */
-  toggleStatus: (id: number): Promise<ApiResponse<Role>> => {
-    return patch(`/roles/${id}/toggle-status`);
+  toggleStatus: ({ id, status }: { id: number; status: number }): Promise<ApiResponse<Role>> => {
+    return patch(`/roles/${id}/status`, { status });
   },
 };
 

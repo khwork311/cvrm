@@ -1,27 +1,18 @@
 import { useToast } from '@/context/ToastContext';
 import { useAuth } from '@/hooks/useAuth';
-import { useActionState, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { z } from 'zod';
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '../../icons';
 import { Input } from '../form';
 import Label from '../form/Label';
 import Button from '../ui/button/Button';
-
-const resetPasswordSchema = z
-  .object({
-    email: z.email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
-    password_confirmation: z.string(),
-  })
-  .refine((data) => data.password === data.password_confirmation, {
-    message: "Passwords don't match",
-    path: ['password_confirmation'],
-  });
+import { ResetPasswordFormData, resetPasswordSchema } from './schemas';
 
 export default function ResetPasswordForm() {
-  const { t } = useTranslation(['auth', 'validation']);
+  const { t, i18n } = useTranslation(['auth', 'validation']);
   const { resetPassword } = useAuth();
   const { success, error: showError } = useToast();
   const navigate = useNavigate();
@@ -29,26 +20,32 @@ export default function ResetPasswordForm() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const token = searchParams.get('token') || '';
   const emailParam = searchParams.get('email') || '';
+  const company_id = searchParams.get('company_id') || '';
 
-  const formAction = async (_prevState: any, formData: FormData) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ResetPasswordFormData>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      email: emailParam,
+    },
+  });
+
+  const onSubmit = async (data: ResetPasswordFormData) => {
     try {
-      const data = {
-        email: formData.get('email') as string,
-        password: formData.get('password') as string,
-        password_confirmation: formData.get('password_confirmation') as string,
-      };
-
-      // Validate with schema
-      const validatedData = resetPasswordSchema.parse(data);
-
+      setIsSubmitting(true);
       await resetPassword({
-        email: validatedData.email,
-        token: token,
-        password: validatedData.password,
-        password_confirmation: validatedData.password_confirmation,
+        email: data.email,
+        token,
+        company_id,
+        password: data.password,
+        password_confirmation: data.password_confirmation,
       });
 
       success(t('auth:resetPasswordSuccess'));
@@ -57,16 +54,14 @@ export default function ResetPasswordForm() {
       setTimeout(() => {
         navigate('/signin');
       }, 2000);
-      return { success: true, errors: null };
     } catch (err: any) {
       console.error('Reset password error:', err);
       const errorMessage = err.response?.data?.message || err.message || t('auth:resetPasswordError');
       showError(errorMessage);
-      return { success: false, errors: err.errors || err.message };
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
-  const [_state, formActionDispatch, isPending] = useActionState(formAction, { success: false, errors: null });
 
   return (
     <div className="flex flex-1 flex-col">
@@ -75,7 +70,7 @@ export default function ResetPasswordForm() {
           to="/signin"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
-          <ChevronLeftIcon className="size-5" />
+          <ChevronLeftIcon className={`size-5 ${i18n.language === 'ar' ? 'rotate-180' : ''} `} />
           {t('auth:backToSignIn')}
         </Link>
       </div>
@@ -88,7 +83,7 @@ export default function ResetPasswordForm() {
             <p className="text-sm text-gray-500 dark:text-gray-400">{t('auth:resetPasswordDescription')}</p>
           </div>
           <div>
-            <form action={formActionDispatch}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="space-y-6">
                 {/* Email Field */}
                 <div>
@@ -96,11 +91,11 @@ export default function ResetPasswordForm() {
                     {t('auth:email')} <span className="text-error-500">*</span>
                   </Label>
                   <Input
-                    name="email"
+                    {...register('email')}
                     id="email"
                     type="email"
                     placeholder={t('auth:emailPlaceholder')}
-                    defaultValue={emailParam}
+                    error={errors.email?.message}
                   />
                 </div>
 
@@ -111,10 +106,11 @@ export default function ResetPasswordForm() {
                   </Label>
                   <div className="relative">
                     <Input
-                      name="password"
+                      {...register('password')}
                       id="password"
                       type={showPassword ? 'text' : 'password'}
                       placeholder={t('auth:passwordPlaceholder')}
+                      error={errors.password?.message}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -136,10 +132,11 @@ export default function ResetPasswordForm() {
                   </Label>
                   <div className="relative">
                     <Input
-                      name="password_confirmation"
+                      {...register('password_confirmation')}
                       id="password_confirmation"
                       type={showConfirmPassword ? 'text' : 'password'}
                       placeholder={t('auth:confirmPasswordPlaceholder')}
+                      error={errors.password_confirmation?.message}
                     />
                     <span
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -156,8 +153,8 @@ export default function ResetPasswordForm() {
 
                 {/* Submit Button */}
                 <div>
-                  <Button className="w-full" size="sm" disabled={isPending}>
-                    {isPending ? t('auth:resetting') : t('auth:resetPassword')}
+                  <Button className="w-full" size="sm" disabled={isSubmitting}>
+                    {isSubmitting ? t('auth:resetting') : t('auth:resetPassword')}
                   </Button>
                 </div>
               </div>

@@ -26,18 +26,10 @@ export const getCompanySchema = (isEdit = false) =>
       subscription_end_date: z.string().optional(),
       plan_id: z.string().min(1, t('company.planRequired')),
       // Contact Person fields - required for create, optional for edit
-      contact_first_name_en: isEdit
-        ? z.string().optional()
-        : z.string().min(1, t('contact.firstNameEnRequired')),
-      contact_first_name_ar: isEdit
-        ? z.string().optional()
-        : z.string().min(1, t('contact.firstNameArRequired')),
-      contact_last_name_en: isEdit
-        ? z.string().optional()
-        : z.string().min(1, t('contact.lastNameEnRequired')),
-      contact_last_name_ar: isEdit
-        ? z.string().optional()
-        : z.string().min(1, t('contact.lastNameArRequired')),
+      contact_first_name_en: isEdit ? z.string().optional() : z.string().min(1, t('contact.firstNameEnRequired')),
+      contact_first_name_ar: isEdit ? z.string().optional() : z.string().min(1, t('contact.firstNameArRequired')),
+      contact_last_name_en: isEdit ? z.string().optional() : z.string().min(1, t('contact.lastNameEnRequired')),
+      contact_last_name_ar: isEdit ? z.string().optional() : z.string().min(1, t('contact.lastNameArRequired')),
       contact_email: isEdit ? z.string().optional() : z.string().email(t('contact.emailInvalid')),
       contact_position: z.string().optional(),
     })

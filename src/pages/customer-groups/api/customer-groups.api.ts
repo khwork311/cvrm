@@ -4,8 +4,8 @@
  * API calls related to customer groups and customer assignments
  */
 
-import { PaginatedResponse, ApiResponse } from '@/types/api.types';
-import { get, post, put } from '../../../lib/axios';
+import { ApiResponse, PaginatedResponse } from '@/types/api.types';
+import { get, patch, post, put } from '../../../lib/axios';
 
 // ============================================================================
 // Customer Groups API
@@ -29,13 +29,14 @@ export interface CustomerGroup {
   customers_count?: number;
   created_at: string;
   updated_at: string;
+  status: number; // 0 = inactive, 1 = active
 }
 
 export interface CustomerGroupFilters {
   search?: string;
   status?: string;
   page?: number;
-  limit?: number;
+  per_page?: number;
 }
 
 export const customerGroupsApi = {
@@ -90,8 +91,8 @@ export const customerGroupsApi = {
   /**
    * Toggle customer group status
    */
-  toggleStatus: (id: number): Promise<ApiResponse<CustomerGroup>> => {
-    return post(`/customer-groups/${id}/toggle-status`, {});
+  toggleStatus: (id: number, status: number): Promise<ApiResponse<CustomerGroup>> => {
+    return patch(`/customer-groups/${id}/status`, { status });
   },
 };
 

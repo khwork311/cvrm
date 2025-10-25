@@ -2,9 +2,4 @@
  * Plans API Exports
  */
 
-export {
-  plansApi,
-  plansApi as default,
-  type Plan,
-  type PlanFilters,
-} from './plans.api';
+export { plansApi as default, plansApi, type Plan, type PlanFilters } from './plans.api';

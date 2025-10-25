@@ -13,7 +13,7 @@ export const VendorDetail = () => {
   const { vendorId } = useParams<{ vendorId: string }>();
 
   const { data: vendorResponse, isLoading } = useVendor(vendorId ? parseInt(vendorId) : null);
-  
+
   // Extract vendor data from API response
   const vendor = vendorResponse?.data;
 

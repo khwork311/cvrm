@@ -43,15 +43,15 @@ export const CompleteProfile = () => {
               <div key={s} className="flex items-center">
                 <div
                   className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                    s <= step ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
+                    s <= step
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-300 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
                   }`}
                 >
                   {s}
                 </div>
                 {s < 3 && (
-                  <div
-                    className={`h-1 w-20 ${s < step ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-700'}`}
-                  ></div>
+                  <div className={`h-1 w-20 ${s < step ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-700'}`}></div>
                 )}
               </div>
             ))}

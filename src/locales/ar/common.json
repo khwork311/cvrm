@@ -30,10 +30,14 @@
   "saving": "جاري الحفظ...",
   "creating": "جاري الإنشاء...",
   "showing": "عرض",
+  "to": "إلى",
   "of": "من",
+  "results": "نتيجة",
+  "previous": "السابق",
   "prev": "السابق",
   "next": "التالي",
   "resetFilters": "إعادة تعيين الفلاتر",
+  "allStatuses": "جميع الحالات",
   "firstNameEn": "الاسم الأول (إنجليزي)",
   "firstNameAr": "الاسم الأول (عربي)",
   "lastNameEn": "اسم العائلة (إنجليزي)",
@@ -51,5 +55,6 @@
   "editProfile": "تعديل الملف الشخصي",
   "accountSettings": "إعدادات الحساب",
   "support": "الدعم",
-  "logout": "تسجيل الخروج"
+  "logout": "تسجيل الخروج",
+  "validationError": "خطأ في التحقق من البيانات"
 }

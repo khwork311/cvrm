@@ -1,7 +1,9 @@
+import { EmptyState } from '@/components/common/EmptyState';
 import Select from '@/components/form/Select';
 import Badge from '@/components/ui/badge/Badge';
-import { TableActionsDropdown, type TableAction } from '@/components/ui/dropdown/TableActionsDropdown';
+import { ConfirmationModal } from '@/components/ui/modal/ConfirmationModal';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
+import { useToast } from '@/context/ToastContext.tsx';
 import { useDebounce } from '@/hooks/useDebounce.ts';
 import { PencilIcon } from '@/icons';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,13 +16,19 @@ import { useContacts, useCreateContact, useToggleContactStatus, useUpdateContact
 import { getContactPersonSchema, type ContactPersonFormData } from './schemas.ts';
 
 export const ContactPersons = () => {
-  const { t } = useTranslation(['contacts', 'common']);
+  const { t } = useTranslation(['customers', 'common']);
   const { companyId } = useParams<{ companyId: string }>();
+  const toast = useToast();
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
   const [editingContact, setEditingContact] = useState<ContactPerson | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    contactId: number | null;
+    action: 'activate' | 'deactivate' | null;
+  }>({ isOpen: false, contactId: null, action: null });
 
   const debouncedSearch = useDebounce(search);
 
@@ -40,12 +48,26 @@ export const ContactPersons = () => {
     { value: '0', label: t('common:notActive') },
   ];
 
-  const toggleStatus = async (id: number) => {
+  const handleConfirmStatusChange = async () => {
+    if (!confirmModal.contactId) return;
+
     try {
-      await toggleTrigger(id);
+      await toggleTrigger(confirmModal.contactId);
       mutate();
+      toast.success(
+        confirmModal.action === 'activate'
+          ? t('contacts:activateSuccess', 'Contact activated successfully')
+          : t('contacts:deactivateSuccess', 'Contact deactivated successfully')
+      );
     } catch (error) {
       console.error('Error toggling contact status:', error);
+      toast.error(
+        confirmModal.action === 'activate'
+          ? t('contacts:activateError', 'Failed to activate contact')
+          : t('contacts:deactivateError', 'Failed to deactivate contact')
+      );
+    } finally {
+      setConfirmModal({ isOpen: false, contactId: null, action: null });
     }
   };
 
@@ -120,7 +142,7 @@ export const ContactPersons = () => {
       </div>
 
       {/* Table */}
-      <div className="mt-6 overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+      <div className="mt-6 overflow-x-auto overflow-y-visible rounded-xl border border-gray-200 dark:border-gray-700">
         <Table className="min-w-[900px]">
           {/* Table Header */}
           <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
@@ -180,29 +202,31 @@ export const ContactPersons = () => {
                 </TableCell>
 
                 <TableCell className="text-theme-sm px-5 py-4 text-center">
-                  <Badge variant="light" color={contact.status === 1 ? 'success' : 'error'}>
-                    {contact.status === 1 ? t('common:active') : t('common:inactive')}
-                  </Badge>
+                  <button
+                    onClick={() =>
+                      setConfirmModal({
+                        isOpen: true,
+                        contactId: contact.id,
+                        action: contact.status === 1 ? 'deactivate' : 'activate',
+                      })
+                    }
+                    className="cursor-pointer transition-opacity hover:opacity-80"
+                    title={contact.status === 1 ? t('common:deactivate') : t('common:activate')}
+                  >
+                    <Badge variant="light" color={contact.status === 1 ? 'success' : 'error'}>
+                      {contact.status === 1 ? t('common:active') : t('common:inactive')}
+                    </Badge>
+                  </button>
                 </TableCell>
 
                 <TableCell className="px-5 py-4 text-center">
-                  <TableActionsDropdown
-                    actions={
-                      [
-                        {
-                          label: t('common:edit'),
-                          onClick: () => handleEdit(contact),
-                          icon: <PencilIcon className="h-4 w-4" />,
-                          variant: 'primary',
-                        },
-                        {
-                          label: contact.status === 1 ? t('common:deactivate') : t('common:activate'),
-                          onClick: () => toggleStatus(contact.id),
-                          variant: contact.status === 1 ? 'danger' : 'success',
-                        },
-                      ] as TableAction[]
-                    }
-                  />
+                  <button
+                    onClick={() => handleEdit(contact)}
+                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-blue-700 hover:shadow-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                    title={t('common:edit')}
+                  >
+                    <PencilIcon className="h-4 w-4" />
+                  </button>
                 </TableCell>
               </TableRow>
             ))}
@@ -211,13 +235,10 @@ export const ContactPersons = () => {
       </div>
 
       {contacts.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-4 py-10">
-          <img src="/images/error/404.svg" alt="404" className="dark:hidden" />
-          <img src="/images/error/404-dark.svg" alt="404" className="hidden dark:block" />
-          <p className="text-center text-2xl font-semibold text-gray-500 dark:text-gray-400">
-            {t('contacts:noContactsFound', 'No contacts found')}
-          </p>
-        </div>
+        <EmptyState
+          title={t('contacts:noContactsFound', 'No contacts found')}
+          description={t('contacts:addFirstContact', 'Add your first contact person')}
+        />
       )}
 
       {/* Modal for Create/Edit */}
@@ -233,6 +254,26 @@ export const ContactPersons = () => {
           }}
         />
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false, contactId: null, action: null })}
+        onConfirm={handleConfirmStatusChange}
+        title={
+          confirmModal.action === 'activate'
+            ? t('contacts:activateConfirmTitle', 'Activate Contact')
+            : t('contacts:deactivateConfirmTitle', 'Deactivate Contact')
+        }
+        message={
+          confirmModal.action === 'activate'
+            ? t('contacts:activateConfirmMessage', 'Are you sure you want to activate this contact?')
+            : t('contacts:deactivateConfirmMessage', 'Are you sure you want to deactivate this contact?')
+        }
+        confirmText={confirmModal.action === 'activate' ? t('common:activate') : t('common:deactivate')}
+        cancelText={t('common:cancel')}
+        variant={confirmModal.action === 'activate' ? 'success' : 'danger'}
+      />
     </div>
   );
 };

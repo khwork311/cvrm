@@ -1,6 +1,6 @@
 /**
  * Vendor Groups SWR Hooks
- * 
+ *
  * Custom hooks for data fetching using SWR
  */
 
@@ -13,7 +13,7 @@ import { vendorGroupsApi, type VendorGroupFilters } from '../api/vendor-groups.a
  */
 export function useVendorGroups(filters?: VendorGroupFilters) {
   const key = ['vendorGroups', filters];
-  
+
   return useSWR(key, () => vendorGroupsApi.getAll(filters), {
     revalidateOnFocus: false,
     keepPreviousData: true,
@@ -24,13 +24,9 @@ export function useVendorGroups(filters?: VendorGroupFilters) {
  * Hook to fetch a single vendor group by ID
  */
 export function useVendorGroup(id: number | null) {
-  return useSWR(
-    id ? ['vendorGroup', id] : null,
-    () => vendorGroupsApi.getById(id!),
-    {
-      revalidateOnFocus: false,
-    }
-  );
+  return useSWR(id ? ['vendorGroup', id] : null, () => vendorGroupsApi.getById(id!), {
+    revalidateOnFocus: false,
+  });
 }
 
 /**
@@ -61,22 +57,16 @@ export function useUpdateVendorGroup() {
  * Hook to delete a vendor group
  */
 export function useDeleteVendorGroup() {
-  return useSWRMutation(
-    'vendorGroups',
-    async (_key, { arg }: { arg: number }) => {
-      return vendorGroupsApi.delete(arg);
-    }
-  );
+  return useSWRMutation('vendorGroups', async (_key, { arg }: { arg: number }) => {
+    return vendorGroupsApi.delete(arg);
+  });
 }
 
 /**
  * Hook to assign vendors to a group
  */
 export function useAssignVendors() {
-  return useSWRMutation(
-    'vendorGroups',
-    async (_key, { arg }: { arg: { groupId: number; vendorIds: number[] } }) => {
-      return vendorGroupsApi.assignVendors(arg.groupId, arg.vendorIds);
-    }
-  );
+  return useSWRMutation('vendorGroups', async (_key, { arg }: { arg: { groupId: number; vendorIds: number[] } }) => {
+    return vendorGroupsApi.assignVendors(arg.groupId, arg.vendorIds);
+  });
 }

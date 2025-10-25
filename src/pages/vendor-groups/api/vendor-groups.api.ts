@@ -4,7 +4,7 @@
  * API calls related to vendor groups and vendor assignments
  */
 
-import { get, post, del } from '../../../lib/axios';
+import { del, get, post, put } from '../../../lib/axios';
 
 // ============================================================================
 // Vendor Groups API
@@ -57,7 +57,7 @@ export interface VendorGroupFilters {
   search?: string;
   status?: number;
   page?: number;
-  limit?: number;
+  per_page?: number;
 }
 
 export const vendorGroupsApi = {
@@ -99,7 +99,10 @@ export const vendorGroupsApi = {
    * Update vendor group
    * POST /api/v1/vendor-groups/:id?_method=PUT
    */
-  update: (id: number, groupData: { name_en: string; name_ar: string; status: number }): Promise<ApiResponse<VendorGroup>> => {
+  update: (
+    id: number,
+    groupData: { name_en: string; name_ar: string; status: number }
+  ): Promise<ApiResponse<VendorGroup>> => {
     // Backend uses POST with _method=PUT for updates
     const formData = new FormData();
     formData.append('name_en', groupData.name_en);
@@ -122,9 +125,13 @@ export const vendorGroupsApi = {
    * PUT /api/v1/vendor-groups/:id/assign-vendor
    */
   assignVendors: (groupId: number, vendorIds: number[]): Promise<ApiResponse<VendorGroup>> => {
-    return post(`/vendor-groups/${groupId}/assign-vendor`, { vendor_ids: vendorIds }, {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return put(
+      `/vendor-groups/${groupId}/assign-vendor`,
+      { vendor_ids: vendorIds },
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   },
 };
 
@@ -139,7 +146,7 @@ export interface Vendor {
   email?: string;
   phone?: string;
   vendor_group_id?: number;
-  status: 'active' | 'inactive';
+  status: number; // 0 = inactive, 1 = active
 }
 
 export interface VendorAssignment {

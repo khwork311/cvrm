@@ -1,10 +1,4 @@
 export { Button } from './Button';
 export type { ButtonProps } from './Button';
 
-export {
-  FormButtons,
-  SubmitButton,
-  CancelButton,
-  DeleteButton,
-  SecondaryButton,
-} from './FormButtons';
+export { CancelButton, DeleteButton, FormButtons, SecondaryButton, SubmitButton } from './FormButtons';

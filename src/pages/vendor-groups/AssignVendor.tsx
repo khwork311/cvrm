@@ -36,27 +36,21 @@ export const AssignVendor: React.FC = () => {
   });
 
   // Transform data to dropdown options
-  const groupOptions: Option[] = useMemo(
-    () => {
-      const groups = groupsData?.data?.data || [];
-      return groups.map((group) => ({
-        value: group.id.toString(),
-        label: group.name_en,
-      }));
-    },
-    [groupsData]
-  );
+  const groupOptions: Option[] = useMemo(() => {
+    const groups = groupsData?.data?.data || [];
+    return groups.map((group) => ({
+      value: group.id.toString(),
+      label: group.name_en,
+    }));
+  }, [groupsData]);
 
-  const vendorOptions: Option[] = useMemo(
-    () => {
-      const vendors = vendorsData?.data?.data || [];
-      return vendors.map((vendor) => ({
-        value: vendor.id.toString(),
-        label: vendor.name_en,
-      }));
-    },
-    [vendorsData]
-  );
+  const vendorOptions: Option[] = useMemo(() => {
+    const vendors = vendorsData?.data?.data || [];
+    return vendors.map((vendor) => ({
+      value: vendor.id.toString(),
+      label: vendor.name_en,
+    }));
+  }, [vendorsData]);
 
   const onSubmit = async (data: VendorAssignmentFormData) => {
     try {
@@ -86,12 +80,16 @@ export const AssignVendor: React.FC = () => {
 
       <div className="p-6">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 lg:p-10 dark:border-gray-800 dark:bg-white/[0.03]">
-          <h2 className="mb-6 text-xl font-semibold text-gray-800 dark:text-white/90">{t('vendorGroups:assignVendor')}</h2>
+          <h2 className="mb-6 text-xl font-semibold text-gray-800 dark:text-white/90">
+            {t('vendorGroups:assignVendor')}
+          </h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Assignment Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">{t('vendorGroups:assignmentDetails')}</h3>
+              <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                {t('vendorGroups:assignmentDetails')}
+              </h3>
 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {/* Vendor Group Selection */}
@@ -157,9 +155,7 @@ export const AssignVendor: React.FC = () => {
                   </svg>
                   <div className="text-sm text-blue-800 dark:text-blue-300">
                     <p className="font-medium">{t('vendorGroups:assignmentInfo')}</p>
-                    <p className="mt-1">
-                      {t('vendorGroups:assignmentDescription')}
-                    </p>
+                    <p className="mt-1">{t('vendorGroups:assignmentDescription')}</p>
                   </div>
                 </div>
               </div>

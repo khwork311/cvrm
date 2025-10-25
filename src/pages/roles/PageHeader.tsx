@@ -52,7 +52,7 @@ const PageHeader = ({ search, setSearch, statusFilter, setStatusFilter }: PageHe
 
         <Select
           options={getStatusOptions(t)}
-          defaultValue={statusFilter === '' ? getStatusOptions(t)[0].label : statusFilter}
+          value={statusFilter === '' ? getStatusOptions(t)[0].label : statusFilter}
           placeholder={t('plans:filterStatus')}
           onChange={(value) => setStatusFilter(value)}
           className="w-full sm:w-40 dark:bg-gray-800"

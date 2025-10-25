@@ -6,7 +6,14 @@
 
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { CreateCustomerData, customersApi, UpdateCustomerData, type CustomerFilters } from '../api/customers.api';
+import {
+  CreateCustomerData,
+  customersApi,
+  InviteCustomerData,
+  RegisterFromInvitationData,
+  UpdateCustomerData,
+  type CustomerFilters,
+} from '../api/customers.api';
 
 /**
  * Hook to fetch all customers with filters
@@ -36,6 +43,34 @@ export function useCreateCustomer() {
   return useSWRMutation('customers', async (_key, { arg }: { arg: CreateCustomerData }) => {
     return customersApi.create(arg);
   });
+}
+
+/**
+ * Hook to invite a new customer
+ */
+export function useInviteCustomer() {
+  return useSWRMutation('customers', async (_key, { arg }: { arg: InviteCustomerData }) => {
+    return customersApi.invite(arg);
+  });
+}
+
+/**
+ * Hook to register from invitation
+ */
+export function useRegisterFromInvitation() {
+  return useSWRMutation(
+    'customer-register-invitation',
+    async (
+      _key,
+      {
+        arg,
+      }: {
+        arg: RegisterFromInvitationData;
+      }
+    ) => {
+      return customersApi.registerFromInvitation(arg);
+    }
+  );
 }
 
 /**

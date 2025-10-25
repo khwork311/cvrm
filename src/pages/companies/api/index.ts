@@ -1,24 +1,24 @@
 /**
  * Companies API Exports
- * 
+ *
  * Centralized export for all companies-related API calls
  */
 
 export {
+  addressesApi,
+  bankAccountsApi,
   companiesApi,
   contactsApi,
-  bankAccountsApi,
-  addressesApi,
   countriesApi,
   companiesApiService as default,
-  type Company,
-  type CompanyFilters,
-  type ContactPerson,
-  type ContactFilters,
-  type BankAccount,
-  type BankAccountFilters,
   type Address,
   type AddressFilters,
-  type Country,
+  type BankAccount,
+  type BankAccountFilters,
   type City,
+  type Company,
+  type CompanyFilters,
+  type ContactFilters,
+  type ContactPerson,
+  type Country,
 } from './companies.api';

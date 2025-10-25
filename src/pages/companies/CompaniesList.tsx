@@ -1,4 +1,5 @@
 import CopyOnClick from '@/components/common/CopyOnClick';
+import { EmptyState } from '@/components/common/EmptyState';
 import Select from '@/components/form/Select';
 import Badge from '@/components/ui/badge/Badge';
 import Button from '@/components/ui/button/Button';
@@ -42,7 +43,7 @@ export const CompaniesList = () => {
     search: debouncedSearch ? debouncedSearch : undefined,
     status: statusFilter !== 'all' ? statusFilter : undefined,
     page,
-    limit: PAGE_LIMIT,
+    per_page: PAGE_LIMIT,
   });
   const companiesData = data?.data?.data;
   const paginationData = data?.data;
@@ -147,7 +148,7 @@ export const CompaniesList = () => {
         </div>
 
         {/* Table for desktop */}
-        <div className="mt-6 hidden overflow-x-auto rounded-xl border border-gray-200 md:block dark:border-gray-700">
+        <div className="mt-6 hidden overflow-x-auto overflow-y-visible rounded-xl border border-gray-200 md:block dark:border-gray-700">
           <Table className="min-w-[1400px]">
             {/* Table Header */}
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
@@ -408,13 +409,10 @@ export const CompaniesList = () => {
         </div>
 
         {companiesData?.length === 0 && (
-          <div className="flex flex-col items-center justify-center gap-4 py-10">
-            <img src="/images/error/404.svg" alt="404" className="dark:hidden" />
-            <img src="/images/error/404-dark.svg" alt="404" className="hidden dark:block" />
-            <p className="text-center text-2xl font-semibold text-gray-500 dark:text-gray-400">
-              {t('companies:noCompaniesFound', 'No companies found')}
-            </p>
-          </div>
+          <EmptyState
+            title={t('companies:noCompaniesFound', 'No companies found')}
+            description={t('companies:noCompaniesDescription', 'Get started by creating your first company')}
+          />
         )}
 
         {/* Pagination */}

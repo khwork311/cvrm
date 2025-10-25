@@ -5,7 +5,7 @@
  * (addresses, bank accounts, invitations)
  */
 
-import { get, patch, post, del } from '../../../lib/axios';
+import { del, get, patch, post } from '../../../lib/axios';
 
 // ============================================================================
 // Vendors API
@@ -52,7 +52,7 @@ export interface Vendor {
 export interface VendorFilters {
   search?: string;
   status?: number;
-  has_user?: boolean;
+  has_user?: number;
   invitation_status?: string;
   page?: number;
   per_page?: number;
@@ -133,26 +133,14 @@ export const vendorsApi = {
    */
   create: (vendorData: any): Promise<ApiResponse<Vendor>> => {
     const formData = new FormData();
-    
-    // Add all vendor fields except arrays
     Object.entries(vendorData).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && !Array.isArray(value)) {
+      if (key === 'group_ids' && Array.isArray(value)) {
+        // Handle array fields - append each value with [] suffix
+        value.forEach((id) => formData.append('group_ids[]', String(id)));
+      } else if (value !== undefined && value !== null) {
         formData.append(key, String(value));
       }
     });
-    
-    // Handle group_ids array
-    if (vendorData.group_ids && Array.isArray(vendorData.group_ids)) {
-      vendorData.group_ids.forEach((id: number) => {
-        formData.append('group_ids[]', String(id));
-      });
-    }
-    
-    // Add required fields if not present
-    if (!vendorData.role_id) {
-      formData.append('role_id', '4'); // Default vendor role
-    }
-    
     return post(`/vendors`, formData);
   },
 
@@ -164,18 +152,13 @@ export const vendorsApi = {
     // Backend uses POST with _method=PUT for updates
     const formData = new FormData();
     Object.entries(vendorData).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && !Array.isArray(value)) {
+      if (key === 'group_ids' && Array.isArray(value)) {
+        // Handle array fields - append each value with [] suffix
+        value.forEach((id) => formData.append('group_ids[]', String(id)));
+      } else if (value !== undefined && value !== null) {
         formData.append(key, String(value));
       }
     });
-    
-    // Handle group_ids array
-    if (vendorData.group_ids && Array.isArray(vendorData.group_ids)) {
-      vendorData.group_ids.forEach((id: number) => {
-        formData.append('group_ids[]', String(id));
-      });
-    }
-    
     formData.append('_method', 'PUT');
     return post(`/vendors/${vendorId}`, formData);
   },
@@ -184,8 +167,8 @@ export const vendorsApi = {
    * Toggle vendor status (activate/deactivate)
    * PATCH /api/v1/vendors/:vendor/status
    */
-  toggleStatus: (vendorId: number): Promise<ApiResponse<Vendor>> => {
-    return patch(`/vendors/${vendorId}/status`);
+  toggleStatus: (vendorId: number, status: number): Promise<ApiResponse<Vendor>> => {
+    return patch(`/vendors/${vendorId}/status`, { status });
   },
 
   /**
@@ -520,7 +503,10 @@ export const vendorGroupsApi = {
    * Update vendor group
    * POST /api/v1/vendor-groups/:id?_method=PUT
    */
-  update: (groupId: number, groupData: { name_en: string; name_ar: string; status: number }): Promise<ApiResponse<VendorGroup>> => {
+  update: (
+    groupId: number,
+    groupData: { name_en: string; name_ar: string; status: number }
+  ): Promise<ApiResponse<VendorGroup>> => {
     // Backend uses POST with _method=PUT for updates
     const formData = new FormData();
     formData.append('name_en', groupData.name_en);
@@ -543,9 +529,13 @@ export const vendorGroupsApi = {
    * PUT /api/v1/vendor-groups/:id/assign-vendor
    */
   assignVendors: (groupId: number, vendorIds: number[]): Promise<ApiResponse<VendorGroup>> => {
-    return post(`/vendor-groups/${groupId}/assign-vendor`, { vendor_ids: vendorIds }, {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return post(
+      `/vendor-groups/${groupId}/assign-vendor`,
+      { vendor_ids: vendorIds },
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   },
 };
 
